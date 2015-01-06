@@ -8,10 +8,12 @@ module.exports = {
 
   inputs: {
     baseUrl: {
+      description: 'The base URL, including the hostname and a protocol like "http://"',
       example: 'http://google.com',
       required: true
     },
     url: {
+      description: 'The "path" part of the URL, including the leading slash ("/")',
       example: '/pets',
       required: true
     },
