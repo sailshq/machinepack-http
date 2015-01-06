@@ -2,7 +2,7 @@ module.exports = {
 
   friendlyName: 'Send http request',
 
-  description: 'Send an HTTP request and wait receive the response.',
+  description: 'Send an HTTP request and receive the response.',
 
   extendedDescription: '',
 
