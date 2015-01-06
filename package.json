@@ -1,0 +1,26 @@
+{
+  "name": "machinepack-http",
+  "version": "0.1.0",
+  "description": "Send an HTTP request.",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha -b"
+  },
+  "keywords": [
+    "http",
+    "machines",
+    "machinepack"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies":{
+    "machine": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  },
+  "machinepack": {
+    "friendlyName": "http",
+    "machineDir": "machines/",
+    "machines": []
+  }
+}
