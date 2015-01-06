@@ -18,6 +18,7 @@ module.exports = {
       required: true
     },
     method: {
+      description: 'The HTTP method or "verb"',
       example: 'get'
     },
     params: {
@@ -126,15 +127,6 @@ module.exports = {
       }
       catch (e) {
         return {};
-      }
-    }
-
-    function parseArray(arrayAsJsonStr) {
-      try {
-        return JSON.parse(arrayAsJsonStr);
-      }
-      catch (e) {
-        return [];
       }
     }
 
