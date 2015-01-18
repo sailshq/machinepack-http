@@ -22,10 +22,15 @@ module.exports = {
       example: 'get'
     },
     params: {
-      example: '{"email": "foo@fooberbash.foo"}'
+      description: 'Parameters to include in the request (e.g. Content-Type: "application/json")',
+      extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.)',
+      typeclass: 'dictionary'
+      // e.g. {"email": "foo@fooberbash.foo"}
     },
     headers: {
-      example: '{"Accepts":"application/json"}'
+      description: 'Headers to include in the request (e.g. Content-Type: "application/json")',
+      typeclass: 'dictionary'
+      // e.g. {"Accepts":"application/json"}
     }
   },
 
@@ -81,9 +86,9 @@ module.exports = {
         return {
           method: 'GET',
           url: inputs.baseUrl + inputs.url,
-          qs: parseObject(inputs.params),
+          qs: inputs.params,
           json: true,
-          headers: parseObject(inputs.headers)
+          headers: inputs.headers
         };
       }
 
@@ -91,8 +96,8 @@ module.exports = {
       return {
         method: inputs.method.toUpperCase(),
         url: inputs.baseUrl + inputs.url,
-        json: parseObject(inputs.params),
-        headers: parseObject(inputs.headers)
+        json: inputs.params||{},
+        headers: inputs.headers||{}
       };
     })(), function gotResponse(err, response, httpBody) {
 
