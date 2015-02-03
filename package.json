@@ -15,7 +15,8 @@
   "dependencies": {
     "machine": "^2.0.2",
     "lodash": "^2.4.1",
-    "request": "^2.51.0"
+    "request": "^2.51.0",
+    "machinepack-urls": "^2.0.0"
   },
   "repository": {
     "type": "git",

@@ -36,20 +36,14 @@ module.exports = {
 
     var Machine = require('machine');
 
-    // If a protocol is already included in URL, leave it alone
-    if (inputs.url.match(/^(http:\/\/|https:\/\/)/)) {}
-    // If protocol is invalid, but sort of makes sense ("//"), change it to `http`
-    else if (inputs.url.match(/^(\/\/)/)){
-      inputs.url = 'http:'+inputs.url;
-    }
-    // Otherwise default to "http://" and prefix the provided URL w/ that
-    else {
-      inputs.url = 'http://'+inputs.url;
-    }
+    var Urls = require('machinepack-urls');
+
+    // Make sure this is a fully-qualified URL, and coerce it if necessary.
+    var url = Urls.sanitize({url: inputs.url}).execSync();
 
     Machine.build(require('./send-http-request')).configure({
       method: 'get',
-      url: inputs.url
+      url: url
     }).exec({
       error: exits.error,
       notOk: exits.notOk,
