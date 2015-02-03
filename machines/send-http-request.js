@@ -7,15 +7,15 @@ module.exports = {
   extendedDescription: '',
 
   inputs: {
-    baseUrl: {
-      description: 'The base URL, including the hostname and a protocol like "http://"',
-      example: 'http://google.com',
+    url: {
+      description: 'The URL where the request should be sent.',
+      extendedDescription: 'If `baseUrl` is specified, then `url` should be the "path" part of the URL-- e.g. everything after and including the leading slash ("/users/7/friends/search")',
+      example: '/pets/18',
       required: true
     },
-    url: {
-      description: 'The "path" part of the URL, including the leading slash ("/")',
-      example: '/pets',
-      required: true
+    baseUrl: {
+      description: 'The base URL, including the hostname and a protocol like "http://"',
+      example: 'http://google.com'
     },
     method: {
       description: 'The HTTP method or "verb"',
@@ -68,16 +68,34 @@ module.exports = {
     var util = require('util');
     var request = require('request');
     var _ = require('lodash');
+    var Urls = require('machinepack-urls');
 
 
+    // Default to a GET request
     inputs.method = (inputs.method||'get').toLowerCase();
 
-    // Strip trailing slash(es) from the base url for API requests
-    inputs.baseUrl = (inputs.baseUrl||'').replace(/\/*$/, '');
+    if (inputs.baseUrl) {
+      // Strip trailing slash(es)
+      inputs.baseUrl = inputs.baseUrl.replace(/\/*$/, '');
 
-    // url should start w/ a leading slash
-    // Help our future selves out by ensuring there is a leading slash:
-    inputs.url = inputs.url.replace(/^([^\/])/,'/$1');
+      // and ensure this is a fully qualified URL w/ the "http://" part
+      // (if not, attempt to coerce)
+      inputs.baseUrl = Urls.sanitize({url:inputs.baseUrl}).execSync();
+
+      // If a `baseUrl` was provided then `url` should just be the path part
+      // of the URL, so it should start w/ a leading slash
+      // (if not, attempt to coerce)
+      inputs.url = inputs.url.replace(/^([^\/])/,'/$1');
+    }
+    // If no baseUrl was specified:
+    else {
+      // Coerce it to an empty string
+      inputs.baseUrl = '';
+
+      // Then ensure `url` is fully qualified (w/ the "http://" and hostname part)
+      inputs.url = Urls.sanitize({url:inputs.url}).execSync();
+    }
+
 
     // Send request
     request((function build_options_for_mikeal_request(){
