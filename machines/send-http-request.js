@@ -22,13 +22,13 @@ module.exports = {
       example: 'get'
     },
     params: {
-      description: 'Parameters to include in the request (e.g. Content-Type: "application/json")',
+      description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"})',
       extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.)',
       typeclass: 'dictionary'
       // e.g. {"email": "foo@fooberbash.foo"}
     },
     headers: {
-      description: 'Headers to include in the request (e.g. Content-Type: "application/json")',
+      description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"})',
       typeclass: 'dictionary'
       // e.g. {"Accepts":"application/json"}
     }

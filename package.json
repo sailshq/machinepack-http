@@ -17,6 +17,10 @@
     "lodash": "^2.4.1",
     "request": "^2.51.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikermcneil/machinepack-http.git"
+  },
   "devDependencies": {
     "mocha": "^2.1.0"
   },
