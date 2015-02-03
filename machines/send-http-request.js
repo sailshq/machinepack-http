@@ -41,7 +41,7 @@ module.exports = {
       example: {
         status: 201,
         headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be anything)'
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }
     },
 
@@ -50,7 +50,7 @@ module.exports = {
       example: {
         status: 400,
         headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be anything)'
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }
     },
 
