@@ -28,7 +28,8 @@
     "friendlyName": "http",
     "machineDir": "machines/",
     "machines": [
-      "send-http-request"
+      "send-http-request",
+      "fetch-webpage-html"
     ]
   }
 }

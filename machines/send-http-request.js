@@ -1,6 +1,6 @@
 module.exports = {
 
-  friendlyName: 'Send http request',
+  friendlyName: 'Send HTTP request',
 
   description: 'Send an HTTP request and receive the response.',
 
@@ -73,7 +73,7 @@ module.exports = {
     inputs.method = (inputs.method||'get').toLowerCase();
 
     // Strip trailing slash(es) from the base url for API requests
-    inputs.baseUrl = inputs.baseUrl.replace(/\/*$/, '');
+    inputs.baseUrl = (inputs.baseUrl||'').replace(/\/*$/, '');
 
     // url should start w/ a leading slash
     // Help our future selves out by ensuring there is a leading slash:
