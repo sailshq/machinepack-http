@@ -37,6 +37,7 @@ module.exports = {
   exits: {
 
     success: {
+      friendlyName: 'then',
       description: '2xx status code returned from server',
       example: {
         status: 201,
@@ -45,8 +46,17 @@ module.exports = {
       }
     },
 
-    notOk: {
-      description: 'Non-2xx status code returned from server',
+    notFound: {
+      description: '404 status code returned from server',
+      example: {
+        status: 404,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    badRequest: {
+      description: '400 status code returned from server',
       example: {
         status: 400,
         headers: '{"Accepts":"application/json"}',
@@ -54,9 +64,40 @@ module.exports = {
       }
     },
 
-    error: {
-      description: 'Unexpected request error',
+    forbidden: {
+      description: '403 status code returned from server',
+      example: {
+        status: 403,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    unauthorized: {
+      description: '401 status code returned from server',
+      example: {
+        status: 401,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    serverError: {
+      description: '5xx status code returned from server (this usually means something went wrong on the other end)',
+      example: {
+        status: 503,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    requestFailed: {
+      description: 'Unexpected connection error: could not send or receive HTTP request.',
       extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
+    },
+
+    error: {
+      description: 'Unexpected error occurred'
     }
   },
 
@@ -121,13 +162,25 @@ module.exports = {
 
       // Wat (disconnected from internet maybe?)
       if (err) {
-        return exits.error('Could not send HTTP request; perhaps network connection was lost?\nError details:\n' + util.inspect(err, false, null));
+        return exits.requestFailed(err);
       }
-
 
       // Non 2xx status code
       if (response.statusCode >= 300 || response.statusCode < 200) {
-        return exits.notOk({
+
+        var exitToCall;
+        switch (response.statusCode) {
+          case 400: exitToCall = exits.badRequest; break;
+          case 401: exitToCall = exits.unauthorized; break;
+          case 403: exitToCall = exits.forbidden; break;
+          case 404: exitToCall = exits.notFound; break;
+          default:
+            if (response.statusCode > 499 && response.statusCode < 600) {
+              exitToCall = exits.serverError;
+            }
+            else exitToCall = exits.error;
+        }
+        return exitToCall({
           status: response.statusCode,
           headers: stringifySafe(response.headers),
           body: stringifySafe(httpBody)

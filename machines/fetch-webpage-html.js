@@ -14,22 +14,65 @@ module.exports = {
   },
   defaultExit: 'success',
   exits: {
+
     success: {
       example: '<html><body><h1>Hello world</h1></body></html>',
       friendlyName: 'then',
       description: 'HTML contents of the web page fetched successfully.'
     },
-    notOk: {
-      description: 'Non-2xx status code returned from server',
+
+    notFound: {
+      description: '404 status code returned from server',
+      example: {
+        status: 404,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    badRequest: {
+      description: '400 status code returned from server',
       example: {
         status: 400,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }
     },
-    error: {
-      description: 'Unexpected request error',
+
+    forbidden: {
+      description: '403 status code returned from server',
+      example: {
+        status: 403,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    unauthorized: {
+      description: '401 status code returned from server',
+      example: {
+        status: 401,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    serverError: {
+      description: '5xx status code returned from server (this usually means something went wrong on the other end)',
+      example: {
+        status: 503,
+        headers: '{"Accepts":"application/json"}',
+        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+      }
+    },
+
+    requestFailed: {
+      description: 'Unexpected connection error: could not send or receive HTTP request.',
       extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
+    },
+
+    error: {
+      description: 'Unexpected error occurred'
     }
   },
   fn: function(inputs, exits) {
