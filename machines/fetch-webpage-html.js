@@ -89,7 +89,12 @@ module.exports = {
       url: url
     }).exec({
       error: exits.error,
-      notOk: exits.notOk,
+      requestFailed: exits.requestFailed,
+      badRequest: exits.badRequest,
+      unauthorized: exits.unauthorized,
+      forbidden: exits.forbidden,
+      notFound: exits.notFound,
+      serverError: exits.serverError,
       success: function (response){
         var html = response.body;
         return exits.success(html);
