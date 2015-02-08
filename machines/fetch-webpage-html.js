@@ -17,6 +17,7 @@ module.exports = {
 
     success: {
       example: '<html><body><h1>Hello world</h1></body></html>',
+      variableName: 'html',
       friendlyName: 'then',
       description: 'HTML contents of the web page fetched successfully.'
     },
