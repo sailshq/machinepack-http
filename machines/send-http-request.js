@@ -27,6 +27,10 @@ module.exports = {
       typeclass: 'dictionary'
       // e.g. {"email": "foo@fooberbash.foo"}
     },
+    formData: {
+      description: 'A boolean value indicating if the params should be sent as url encoded form data. If false JSON will be used.',
+      example: false
+    },
     headers: {
       description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"})',
       typeclass: 'dictionary'
@@ -151,13 +155,19 @@ module.exports = {
         };
       }
 
-
-      return {
+      var options = {
         method: inputs.method.toUpperCase(),
         url: inputs.baseUrl + inputs.url,
-        json: inputs.params||{},
         headers: inputs.headers||{}
       };
+
+      if(inputs.formData) {
+        options.form = inputs.params || {};
+      } else {
+        options.json = inputs.params || {};
+      }
+
+      return options;
     })(), function gotResponse(err, response, httpBody) {
 
       // Wat (disconnected from internet maybe?)
@@ -217,4 +227,3 @@ module.exports = {
   },
 
 };
-
