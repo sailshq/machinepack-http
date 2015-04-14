@@ -1,6 +1,6 @@
 {
   "name": "machinepack-http",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Send an HTTP request.",
   "scripts": {
     "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js"
