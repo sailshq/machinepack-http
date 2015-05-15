@@ -16,7 +16,7 @@
     "machine": "^4.0.1",
     "lodash": "^2.4.1",
     "request": "^2.51.0",
-    "machinepack-urls": "^3.1.0"
+    "machinepack-urls": "^4.0.0"
   },
   "repository": {
     "type": "git",
