@@ -83,7 +83,7 @@ module.exports = {
     var Urls = require('machinepack-urls');
 
     // Make sure this is a fully-qualified URL, and coerce it if necessary.
-    var url = Urls.sanitize({url: inputs.url}).execSync();
+    var url = Urls.resolve({url: inputs.url}).execSync();
 
     Machine.build(require('./send-http-request')).configure({
       method: 'get',

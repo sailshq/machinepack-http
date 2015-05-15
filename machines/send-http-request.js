@@ -125,7 +125,7 @@ module.exports = {
 
       // and ensure this is a fully qualified URL w/ the "http://" part
       // (if not, attempt to coerce)
-      inputs.baseUrl = Urls.sanitize({url:inputs.baseUrl}).execSync();
+      inputs.baseUrl = Urls.resolve({url:inputs.baseUrl}).execSync();
 
       // If a `baseUrl` was provided then `url` should just be the path part
       // of the URL, so it should start w/ a leading slash
@@ -138,7 +138,7 @@ module.exports = {
       inputs.baseUrl = '';
 
       // Then ensure `url` is fully qualified (w/ the "http://" and hostname part)
-      inputs.url = Urls.sanitize({url:inputs.url}).execSync();
+      inputs.url = Urls.resolve({url:inputs.url}).execSync();
     }
 
 
