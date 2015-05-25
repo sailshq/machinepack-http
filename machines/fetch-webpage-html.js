@@ -12,7 +12,7 @@ module.exports = {
     }
 
   },
-  defaultExit: 'success',
+
   exits: {
 
     success: {

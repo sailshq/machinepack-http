@@ -1,10 +1,11 @@
 module.exports = {
 
+
   friendlyName: 'Send HTTP request',
+
 
   description: 'Send an HTTP request and receive the response.',
 
-  extendedDescription: '',
 
   inputs: {
     url: {
@@ -24,7 +25,7 @@ module.exports = {
     params: {
       description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"})',
       extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.)',
-      typeclass: 'dictionary'
+      example: {},
       // e.g. {"email": "foo@fooberbash.foo"}
     },
     formData: {
@@ -33,7 +34,7 @@ module.exports = {
     },
     headers: {
       description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"})',
-      typeclass: 'dictionary'
+      example: {},
       // e.g. {"Accepts":"application/json"}
     }
   },
