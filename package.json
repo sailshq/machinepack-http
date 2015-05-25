@@ -13,10 +13,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "machine": "^4.0.1",
-    "lodash": "^2.4.1",
-    "request": "^2.51.0",
-    "machinepack-urls": "^4.0.0"
+    "lodash": "^3.9.2",
+    "machine": "^9.0.3",
+    "machinepack-urls": "^4.0.0",
+    "request": "^2.55.0"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "mocha": "^2.1.0",
-    "test-machinepack-mocha": "^0.2.2"
+    "test-machinepack-mocha": "^1.0.0"
   },
   "machinepack": {
     "friendlyName": "http",
