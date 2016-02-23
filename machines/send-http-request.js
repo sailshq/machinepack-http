@@ -24,17 +24,18 @@ module.exports = {
     },
     params: {
       description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"})',
-      extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.)',
+      extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.).  For non-GET requests, this input will be ignored if "body" is provided.',
       example: {},
       // e.g. {"email": "foo@fooberbash.foo"}
     },
     body: {
       description: 'Body of the request (for PUT and POST)',
-      extendedDescription: 'This will override the value of the "params" input, if any',
+      extendedDescription: 'This will override the value of the "params" input (if any) for non-GET requests unless "formData" is true.  Conversely, GET requests will ignore this input entirely.  To send an empty body with a non-GET request, do not provide a value for the "params" or "body" inputs.',
       example: '*'
     },
     formData: {
       description: 'A boolean value indicating if the params should be sent as url encoded form data. If false JSON will be used.',
+      extendedDescription: 'If "formData" is true, the "body" input will be ignored in favor of the "params" input value (defaulting to an empty dictionary).',
       example: false
     },
     headers: {
