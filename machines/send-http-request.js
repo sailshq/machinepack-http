@@ -28,6 +28,11 @@ module.exports = {
       example: {},
       // e.g. {"email": "foo@fooberbash.foo"}
     },
+    body: {
+      description: 'Body of the request (for PUT and POST)',
+      extendedDescription: 'This will override the value of the "params" input, if any',
+      example: '*'
+    },
     formData: {
       description: 'A boolean value indicating if the params should be sent as url encoded form data. If false JSON will be used.',
       example: false
@@ -165,7 +170,7 @@ module.exports = {
       if(inputs.formData) {
         options.form = inputs.params || {};
       } else {
-        options.json = inputs.params || {};
+        options.json = inputs.body || inputs.params;
       }
 
       return options;
