@@ -6,8 +6,8 @@ module.exports = {
     url: {
       friendlyName: 'URL',
       example: 'http://www.example.com',
-      description: 'The URL of the web page to fetched',
-      extendedDescription: 'This should include the hostname and a protocol like "http://"',
+      description: 'The URL of the web page to fetched.',
+      extendedDescription: 'This should include the hostname and a protocol like "http://".',
       required: true,
     }
 
@@ -16,15 +16,16 @@ module.exports = {
   exits: {
 
     success: {
-      example: '<html><body><h1>Hello world</h1></body></html>',
-      variableName: 'html',
-      friendlyName: 'then',
-      description: 'HTML contents of the web page fetched successfully.'
+      outputExample: '<html><body><h1>Hello world</h1></body></html>',
+      outputFriendlyName: 'Webpage HTML',
+      outputDescription: 'The HTML contents of the fetched web page.'
     },
 
     notFound: {
-      description: '404 status code returned from server',
-      example: {
+      description: '404 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 404,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -32,8 +33,10 @@ module.exports = {
     },
 
     badRequest: {
-      description: '400 status code returned from server',
-      example: {
+      description: '400 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 400,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -41,8 +44,10 @@ module.exports = {
     },
 
     forbidden: {
-      description: '403 status code returned from server',
-      example: {
+      description: '403 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 403,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -50,8 +55,10 @@ module.exports = {
     },
 
     unauthorized: {
-      description: '401 status code returned from server',
-      example: {
+      description: '401 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 401,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -59,8 +66,10 @@ module.exports = {
     },
 
     serverError: {
-      description: '5xx status code returned from server (this usually means something went wrong on the other end)',
-      example: {
+      description: '5xx status code returned from server (this usually means something went wrong on the other end).',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 503,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -72,9 +81,6 @@ module.exports = {
       extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
     },
 
-    error: {
-      description: 'Unexpected error occurred'
-    }
   },
   fn: function(inputs, exits) {
 

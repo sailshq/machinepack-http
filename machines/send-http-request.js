@@ -15,21 +15,21 @@ module.exports = {
       required: true
     },
     baseUrl: {
-      description: 'The base URL, including the hostname and a protocol like "http://"',
+      description: 'The base URL, including the hostname and a protocol like "http://".',
       example: 'http://google.com'
     },
     method: {
-      description: 'The HTTP method or "verb"',
+      description: 'The HTTP method or "verb".',
       example: 'get'
     },
     params: {
-      description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"})',
+      description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"}).',
       extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.).  For non-GET requests, this input will be ignored if "body" is provided.',
       example: {},
       // e.g. {"email": "foo@fooberbash.foo"}
     },
     body: {
-      description: 'Body of the request (for PUT and POST)',
+      description: 'Body of the request (for PUT and POST).',
       extendedDescription: 'This will override the value of the "params" input (if any) for non-GET requests unless "formData" is true.  Conversely, GET requests will ignore this input entirely.  To send an empty body with a non-GET request, do not provide a value for the "params" or "body" inputs.',
       example: '*'
     },
@@ -39,7 +39,7 @@ module.exports = {
       example: false
     },
     headers: {
-      description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"})',
+      description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"}).',
       example: {},
       // e.g. {"Accepts":"application/json"}
     }
@@ -48,9 +48,10 @@ module.exports = {
   exits: {
 
     success: {
-      friendlyName: 'then',
-      description: '2xx status code returned from server',
-      example: {
+      description: '2xx status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 201,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -58,8 +59,10 @@ module.exports = {
     },
 
     notFound: {
-      description: '404 status code returned from server',
-      example: {
+      description: '404 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 404,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -67,8 +70,10 @@ module.exports = {
     },
 
     badRequest: {
-      description: '400 status code returned from server',
-      example: {
+      description: '400 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 400,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -76,8 +81,10 @@ module.exports = {
     },
 
     forbidden: {
-      description: '403 status code returned from server',
-      example: {
+      description: '403 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 403,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -85,8 +92,10 @@ module.exports = {
     },
 
     unauthorized: {
-      description: '401 status code returned from server',
-      example: {
+      description: '401 status code returned from server.',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 401,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -94,8 +103,10 @@ module.exports = {
     },
 
     serverError: {
-      description: '5xx status code returned from server (this usually means something went wrong on the other end)',
-      example: {
+      description: '5xx status code returned from server (this usually means something went wrong on the other end).',
+      outputFriendlyName: 'Server response',
+      outputDescription: 'The response from the server, including status, headers and body.',
+      outputExample: {
         status: 503,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
@@ -107,12 +118,7 @@ module.exports = {
       extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
     },
 
-    error: {
-      description: 'Unexpected error occurred'
-    }
   },
-
-  defaultExit: 'success',
 
   fn: function (inputs,exits) {
 
