@@ -103,7 +103,20 @@ module.exports = {
       notFound: exits.notFound,
       serverError: exits.serverError,
       success: function (response){
-        var html = response.body;
+
+        // Declare a var to hold the response HTML
+        var html;
+
+        // Attempt to parse the response in case it came back as a JSON string
+        try {
+          html = JSON.parse(response.body);
+        }
+        // Otherwise use the raw response
+        catch (e) {
+          html = response.body;
+        }
+
+        // Send the HTML through the `success` exit.
         return exits.success(html);
       }
     });
