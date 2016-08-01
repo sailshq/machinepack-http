@@ -1,10 +1,11 @@
 var assert = require('assert');
 var path = require('path');
-var Sails = require('sails');
+var SailsApp = require('sails').Sails;
 var Http = require('../');
 
 describe('machinepack-http: send-http-request', function() {
 
+  var Sails = new SailsApp();
   var app;
   before(function(done) {
     process.chdir(path.resolve(__dirname, 'fixtures', 'app'));

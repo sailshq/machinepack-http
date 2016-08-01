@@ -32,6 +32,11 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
+  '/html': function (req, res) {
+    res.header('content-type', 'text/html');
+    return res.send('<html><body>hi!</body></html>');
+  },
+
   '/ok': function (req, res) {
     res.header('x-some-header', 'foobar!');
     res.header('content-type', 'application/json');
