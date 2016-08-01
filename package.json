@@ -33,7 +33,12 @@
     "machineDir": "machines/",
     "machines": [
       "send-http-request",
-      "fetch-webpage-html"
+      "fetch-webpage-html",
+      "get",
+      "post",
+      "put",
+      "del",
+      "patch"
     ],
     "testsUrl": "https://travis-ci.org/mikermcneil/machinepack-http"
   }
