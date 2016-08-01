@@ -122,11 +122,16 @@ module.exports = {
 
   fn: function (inputs,exits) {
 
-    // Module dependencies
+    // Import `util`.
     var util = require('util');
-    var request = require('request');
+
+    // Import `lodash` and `request`.
     var _ = require('lodash');
+    var request = require('request');
+
+    // Import `machinepack-urls` and `machinepack-json`.
     var Urls = require('machinepack-urls');
+    var Json = require('machinepack-json');
 
 
     // Default to a GET request
@@ -203,40 +208,23 @@ module.exports = {
             }
             else exitToCall = exits.error;
         }
+
+        // Call the appropriate error with information from the server response.
         return exitToCall({
           status: response.statusCode,
-          headers: stringifySafe(response.headers),
-          body: stringifySafe(httpBody)
+          headers: Json.stringifySafe({value: response.headers || {}}).execSync(),
+          body: Json.stringifySafe({value: httpBody || ''}).execSync()
         });
       }
 
-      // Success, send back the body
+      // Success!  Output the server response through the `success` exit.
       return exits.success({
         status: response.statusCode,
-        headers: stringifySafe(response.headers),
-        body: stringifySafe(httpBody)
+        headers: Json.stringifySafe({value: response.headers || {}}).execSync(),
+        body: Json.stringifySafe({value: httpBody || ''}).execSync()
       });
     });
 
-
-    // Helper functions
-    function parseObject(objAsJsonStr) {
-      try {
-        return JSON.parse(objAsJsonStr);
-      }
-      catch (e) {
-        return {};
-      }
-    }
-
-    function stringifySafe(serializableThing) {
-      try {
-        return JSON.stringify(serializableThing);
-      }
-      catch (e) {
-        return '';
-      }
-    }
   },
 
 };

@@ -15,6 +15,7 @@
   "dependencies": {
     "lodash": "^3.9.2",
     "machine": "^10.3.1",
+    "machinepack-json": "^2.0.1",
     "machinepack-urls": "^4.0.0",
     "request": "^2.55.0"
   },
