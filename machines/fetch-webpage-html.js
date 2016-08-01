@@ -84,14 +84,17 @@ module.exports = {
   },
   fn: function(inputs, exits) {
 
-    var Machine = require('machine');
-
+    // Require machinepack-urls
     var Urls = require('machinepack-urls');
+
+    // Require this pack
+    var Http = require('../');
 
     // Make sure this is a fully-qualified URL, and coerce it if necessary.
     var url = Urls.resolve({url: inputs.url}).execSync();
 
-    Machine.build(require('./send-http-request')).configure({
+    // Send the HTTP request
+    Http.sendHttpRequest({
       method: 'get',
       url: url
     }).exec({
