@@ -3,7 +3,7 @@
   "version": "2.4.0",
   "description": "Send an HTTP request.",
   "scripts": {
-    "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js"
+    "test": "mocha tests/** -R spec"
   },
   "keywords": [
     "http",
@@ -24,7 +24,8 @@
     "url": "git@github.com:mikermcneil/machinepack-http.git"
   },
   "devDependencies": {
-    "mocha": "^2.1.0",
+    "mocha": "^3.0.0",
+    "sails": "^0.12.4",
     "test-machinepack-mocha": "^2.1.1"
   },
   "machinepack": {
