@@ -134,68 +134,79 @@ module.exports = {
     var Json = require('machinepack-json');
 
 
-    // Default to a GET request
+    // Default to a GET request.
     inputs.method = (inputs.method||'get').toLowerCase();
 
+    // If `inputs.baseUrl` is specified, resolve the `inputs.url` from that base.
     if (inputs.baseUrl) {
-      // Strip trailing slash(es)
+
+      // Strip trailing slashes.
       inputs.baseUrl = inputs.baseUrl.replace(/\/*$/, '');
 
-      // and ensure this is a fully qualified URL w/ the "http://" part
-      // (if not, attempt to coerce)
+      // Ensure this is a fully qualified URL w/ the "http://" part,
+      // and if not, attempt to coerce.  Note that if this fails, the error
+      // will be forwarded through our `error` exit, which is proper since
+      // it'll be an input validation error.
       inputs.baseUrl = Urls.resolve({url:inputs.baseUrl}).execSync();
 
       // If a `baseUrl` was provided then `url` should just be the path part
-      // of the URL, so it should start w/ a leading slash
-      // (if not, attempt to coerce)
+      // of the URL, so it should start w/ a leading slash.
       inputs.url = inputs.url.replace(/^([^\/])/,'/$1');
     }
-    // If no baseUrl was specified:
+
+    // If no baseUrl was specified...
     else {
-      // Coerce it to an empty string
+      // Coerce it to an empty string.
       inputs.baseUrl = '';
 
-      // Then ensure `url` is fully qualified (w/ the "http://" and hostname part)
+      // Ensure `url` is fully qualified (w/ the "http://" and hostname part).
       inputs.url = Urls.resolve({url:inputs.url}).execSync();
     }
 
+    // Build the options to send to the `request` module.
+    var options = (function build_options_for_mikeal_request(){
 
-    // Send request
-    request((function build_options_for_mikeal_request(){
-
-      if (inputs.method === 'get') {
-        return {
-          method: 'GET',
-          url: inputs.baseUrl + inputs.url,
-          qs: inputs.params,
-          json: true,
-          headers: inputs.headers
-        };
-      }
-
+      // Declare a var to hold the options, and set some base values.
       var options = {
         method: inputs.method.toUpperCase(),
         url: inputs.baseUrl + inputs.url,
         headers: inputs.headers||{}
       };
 
+      // For GET requests, set the query string to the specified params,
+      // and default to expecting a JSON response.
+      if (options.method === 'GET') {
+        return _.extend(options, {
+          qs: inputs.params,
+          json: true,
+        });
+      }
+
+      // Set the "form" or "json" options depending on whether `inputs.formData`
+      // was set.
       if(inputs.formData) {
         options.form = inputs.params || {};
       } else {
         options.json = inputs.body || inputs.params;
       }
 
+      // Return the options dictionary we constructed.
       return options;
-    })(), function gotResponse(err, response, httpBody) {
+    })();
+
+    // Send the request using the options dictionary constructed above.
+    request(options, function gotResponse(err, response, httpBody) {
 
       // Wat (disconnected from internet maybe?)
+      // Return the unknown error through `requestFailed`.
       if (err) {
         return exits.requestFailed(err);
       }
 
-      // Non 2xx status code
+      // If the status code of the response is not 2xx or 3xx...
       if (response.statusCode >= 300 || response.statusCode < 200) {
 
+        // Determine which exit to call based on the status code.
         var exitToCall;
         switch (response.statusCode) {
           case 400: exitToCall = exits.badRequest; break;
