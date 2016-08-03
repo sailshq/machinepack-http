@@ -10,6 +10,7 @@ describe('machinepack-http: put', function() {
   before(function(done) {
     process.chdir(path.resolve(__dirname, 'fixtures', 'app'));
     Sails.lift({
+      hooks: {grunt: false, views: false},
       port: 1492
     }, function(err, _sails) {
       if (err) {return done(err);}
