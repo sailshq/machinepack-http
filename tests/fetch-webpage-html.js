@@ -40,15 +40,15 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   });
 
-  it('should trigger `notFound` when a 404 status code is received', function(done) {
+  it('should trigger `non200Response` when a 404 status code is received', function(done) {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/notFound',
     }).exec({
       success: function() {
-        return done('Expected the `notFound` exit to be triggered, not `success`!');
+        return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      notFound: function(response) {
+      non200Response: function(response) {
         assert.equal(response.status, 404);
         return done();
       },
@@ -57,15 +57,15 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   });
 
-  it('should trigger `badRequest` when a 400 status code is received', function(done) {
+  it('should trigger `non200Response` when a 400 status code is received', function(done) {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/badRequest',
     }).exec({
       success: function() {
-        return done('Expected the `badRequest` exit to be triggered, not `success`!');
+        return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      badRequest: function(response) {
+      non200Response: function(response) {
         assert.equal(response.status, 400);
         return done();
       },
@@ -74,15 +74,15 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   });
 
-  it('should trigger `forbidden` when a 403 status code is received', function(done) {
+  it('should trigger `non200Response` when a 403 status code is received', function(done) {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/forbidden',
     }).exec({
       success: function() {
-        return done('Expected the `forbidden` exit to be triggered, not `success`!');
+        return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      forbidden: function(response) {
+      non200Response: function(response) {
         assert.equal(response.status, 403);
         return done();
       },
@@ -91,15 +91,15 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   });
 
-  it('should trigger `unauthorized` when a 401 status code is received', function(done) {
+  it('should trigger `non200Response` when a 401 status code is received', function(done) {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/unauthorized',
     }).exec({
       success: function() {
-        return done('Expected the `unauthorized` exit to be triggered, not `success`!');
+        return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      unauthorized: function(response) {
+      non200Response: function(response) {
         assert.equal(response.status, 401);
         return done();
       },
@@ -108,15 +108,15 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   });
 
-  it('should trigger `serverError` when a 5xx status code is received', function(done) {
+  it('should trigger `non200Response` when a 5xx status code is received', function(done) {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/error',
     }).exec({
       success: function() {
-        return done('Expected the `serverError` exit to be triggered, not `success`!');
+        return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      serverError: function(response) {
+      non200Response: function(response) {
         assert.equal(response.status, 500);
         return done();
       },

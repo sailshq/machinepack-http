@@ -1,6 +1,15 @@
 module.exports = {
+
+
   friendlyName: 'Fetch webpage HTML',
+
+
   description: 'Fetch the HTML from a web page.',
+
+
+  sideEffects: 'cacheable',
+
+
   inputs: {
 
     url: {
@@ -21,8 +30,13 @@ module.exports = {
       outputDescription: 'The HTML contents of the fetched web page.'
     },
 
-    notFound: {
-      description: '404 status code returned from server.',
+    requestFailed: {
+      description: 'Unexpected connection error: could not send or receive HTTP request.',
+      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
+    },
+
+    non200Response: {
+      description: 'A non-2xx status code was returned from the server.',
       outputFriendlyName: 'Server response',
       outputDescription: 'The response from the server, including status, headers and body.',
       outputExample: {
@@ -30,56 +44,7 @@ module.exports = {
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }
-    },
-
-    badRequest: {
-      description: '400 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 400,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    forbidden: {
-      description: '403 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 403,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    unauthorized: {
-      description: '401 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 401,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    serverError: {
-      description: '5xx status code returned from server (this usually means something went wrong on the other end).',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 503,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    requestFailed: {
-      description: 'Unexpected connection error: could not send or receive HTTP request.',
-      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
-    },
+    }
 
   },
   fn: function(inputs, exits) {
@@ -100,11 +65,11 @@ module.exports = {
     }).exec({
       error: exits.error,
       requestFailed: exits.requestFailed,
-      badRequest: exits.badRequest,
-      unauthorized: exits.unauthorized,
-      forbidden: exits.forbidden,
-      notFound: exits.notFound,
-      serverError: exits.serverError,
+      badRequest: exits.non200Response,
+      unauthorized: exits.non200Response,
+      forbidden: exits.non200Response,
+      notFound: exits.non200Response,
+      serverError: exits.non200Response,
       success: function (response){
 
         // Declare a var to hold the response HTML
