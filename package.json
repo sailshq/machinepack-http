@@ -3,7 +3,7 @@
   "version": "2.4.0",
   "description": "Send an HTTP request.",
   "scripts": {
-    "test": "mocha tests/** -R spec"
+    "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && mocha tests/** -R spec"
   },
   "keywords": [
     "http",
@@ -38,7 +38,8 @@
       "post",
       "put",
       "del",
-      "patch"
+      "patch",
+      "negotiate-http-status"
     ],
     "testsUrl": "https://travis-ci.org/mikermcneil/machinepack-http"
   }

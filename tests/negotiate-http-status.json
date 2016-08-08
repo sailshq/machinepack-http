@@ -1,0 +1,107 @@
+{
+  "machine": "negotiate-http-status",
+  "expectations": [
+    {
+      "using": {
+        "statusCode": 200
+      },
+      "outcome": "success"
+    },
+    {
+      "using": {
+        "statusCode": 201
+      },
+      "outcome": "success"
+    },
+    {
+      "using": {
+        "statusCode": 299
+      },
+      "outcome": "success"
+    },
+    {
+      "using": {
+        "statusCode": 300
+      },
+      "outcome": "redirect"
+    },
+    {
+      "using": {
+        "statusCode": 302
+      },
+      "outcome": "redirect"
+    },
+    {
+      "using": {
+        "statusCode": 399
+      },
+      "outcome": "redirect"
+    },
+    {
+      "using": {
+        "statusCode": 400
+      },
+      "outcome": "badRequest"
+    },
+    {
+      "using": {
+        "statusCode": 401
+      },
+      "outcome": "unauthorized"
+    },
+    {
+      "using": {
+        "statusCode": 402
+      },
+      "outcome": "otherClientError"
+    },
+    {
+      "using": {
+        "statusCode": 403
+      },
+      "outcome": "forbidden"
+    },
+    {
+      "using": {
+        "statusCode": 404
+      },
+      "outcome": "notFound"
+    },
+    {
+      "using": {
+        "statusCode": 499
+      },
+      "outcome": "otherClientError"
+    },
+    {
+      "using": {
+        "statusCode": 500
+      },
+      "outcome": "serverError"
+    },
+    {
+      "using": {
+        "statusCode": 503
+      },
+      "outcome": "serverError"
+    },
+    {
+      "using": {
+        "statusCode": 599
+      },
+      "outcome": "serverError"
+    },
+    {
+      "using": {
+        "statusCode": 600
+      },
+      "outcome": "other"
+    },
+    {
+      "using": {
+        "statusCode": 99
+      },
+      "outcome": "other"
+    }
+  ]
+}
