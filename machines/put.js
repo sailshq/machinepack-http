@@ -11,12 +11,14 @@ module.exports = {
 
 
   inputs: {
+
     url: {
       description: 'The URL where the PUT request should be sent.',
       extendedDescription: 'This should include the hostname and a protocol like "http://".',
       example: 'http://www.example.com',
       required: true
     },
+
     body: {
       description: 'Body of the request.',
       example: '*'
