@@ -7,6 +7,9 @@ module.exports = {
   description: 'Send a GET request and receive the response.',
 
 
+  sideEffects: 'cacheable',
+
+
   inputs: {
     url: {
       description: 'The URL where the GET request should be sent.',
@@ -23,7 +26,7 @@ module.exports = {
       outputFriendlyName: 'Server response',
       outputDescription: 'The response from the server, including status, headers and body.',
       outputExample: {
-        status: 201,
+        status: 200,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }

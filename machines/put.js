@@ -7,6 +7,9 @@ module.exports = {
   description: 'Send a PUT request and receive the response.',
 
 
+  sideEffects: 'idempotent',
+
+
   inputs: {
     url: {
       description: 'The URL where the PUT request should be sent.',

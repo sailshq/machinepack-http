@@ -7,6 +7,9 @@ module.exports = {
   description: 'Send a PATCH request and receive the response.',
 
 
+  sideEffects: 'idempotent',
+
+
   inputs: {
     url: {
       description: 'The URL where the PATCH request should be sent.',
@@ -27,7 +30,7 @@ module.exports = {
       outputFriendlyName: 'Server response',
       outputDescription: 'The response from the server, including status, headers and body.',
       outputExample: {
-        status: 201,
+        status: 200,
         headers: '{"Accepts":"application/json"}',
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
       }

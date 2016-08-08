@@ -8,41 +8,49 @@ module.exports = {
 
 
   inputs: {
+
     url: {
       description: 'The URL where the request should be sent.',
       extendedDescription: 'If `baseUrl` is specified, then `url` should be the "path" part of the URL-- e.g. everything after and including the leading slash ("/users/7/friends/search")',
       example: '/pets/18',
       required: true
     },
+
     baseUrl: {
       description: 'The base URL, including the hostname and a protocol like "http://".',
       example: 'http://google.com'
     },
+
     method: {
       description: 'The HTTP method or "verb".',
       example: 'get'
     },
+
     params: {
       description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"}).',
       extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.).  For non-GET requests, this input will be ignored if "body" is provided.',
       example: {},
       // e.g. {"email": "foo@fooberbash.foo"}
     },
+
     body: {
       description: 'Body of the request (for PUT and POST).',
       extendedDescription: 'This will override the value of the "params" input (if any) for non-GET requests unless "formData" is true.  Conversely, GET requests will ignore this input entirely.  To send an empty body with a non-GET request, do not provide a value for the "params" or "body" inputs.',
       example: '*'
     },
+
     formData: {
       description: 'A boolean value indicating if the params should be sent as url encoded form data. If false JSON will be used.',
       extendedDescription: 'If "formData" is true, the "body" input will be ignored in favor of the "params" input value (defaulting to an empty dictionary).',
       example: false
     },
+
     headers: {
       description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"}).',
       example: {},
       // e.g. {"Accepts":"application/json"}
     }
+
   },
 
   exits: {
