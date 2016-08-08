@@ -13,7 +13,7 @@ module.exports = {
   inputs: {
 
     statusCode: {
-      description: 'The status code to negotiate',
+      description: 'The status code to negotiate.',
       example: 403
     }
 
@@ -27,7 +27,7 @@ module.exports = {
     },
 
     redirect: {
-      description: 'A 3xx status code was returned,',
+      description: 'A 3xx status code was returned.',
     },
 
     badRequest: {
