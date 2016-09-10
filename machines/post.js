@@ -5,8 +5,8 @@ module.exports = {
 
 
   description: 'Send a POST request and receive the response.',
-  
-  
+
+
   extendedDescription: 'This machine is designed for making everyday requests to a JSON API.  '+
   'For more flexibility, use the lower-level machine, `sendHttpRequest()`.',
 
@@ -16,7 +16,7 @@ module.exports = {
     url: {
       description: 'The URL where the POST request should be sent.',
       extendedDescription: 'This should include the hostname and a protocol like "http://".',
-      example: 'http://www.example.com',
+      example: 'https://example.com/api/v1/farms',
       required: true
     },
 
@@ -66,7 +66,17 @@ module.exports = {
     var Http = require('../');
 
     // Make sure this is a fully-qualified URL, and coerce it if necessary.
-    var url = Urls.resolve({url: inputs.url}).execSync();
+    var url;
+    try {
+      url = Urls.resolve({url: inputs.url}).execSync();
+    } catch (e) {
+      switch (e.exit) {
+        case 'invalid':
+          return exits.error(new Error('The specified URL (`'+inputs.url+'`) is not a valid, fully-qualified URL.  Make sure to include the hostname (e.g. "example.com").'));
+        default:
+          return exits.error(new Error('Consistency violation: Unexpected error resolving the specified URL.  Details: '+e.stack));
+      }
+    }
 
     // Send the HTTP request
     Http.sendHttpRequest({
