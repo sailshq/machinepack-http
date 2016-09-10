@@ -52,7 +52,7 @@ module.exports = {
       outputExample: {
         statusCode: 404,
         headers: {},
-        body: '...[{"maybe some JSON": "like this"}]  (but could be any string)''
+        body: '...[{"maybe some JSON": "like this"}]  (but could be any string)'
       }
     }
   },
