@@ -1,10 +1,14 @@
 module.exports = {
 
 
-  friendlyName: 'Send POST request',
+  friendlyName: 'POST',
 
 
   description: 'Send a POST request and receive the response.',
+  
+  
+  extendedDescription: 'This machine is designed for making everyday requests to a JSON API.  '+
+  'For more flexibility, use the lower-level machine, `sendHttpRequest()`.',
 
 
   inputs: {
@@ -16,9 +20,11 @@ module.exports = {
       required: true
     },
 
-    body: {
-      description: 'Body of the request.',
-      example: '*'
+    data: {
+      description: 'Data to send in the body of this request.',
+      extendedDescription: 'This request data will be transmitted as JSON.  Use the lower-level machine, '+
+      '`sendHttpRequest()`, for additional options.',
+      example: {}
     }
 
   },
@@ -26,14 +32,12 @@ module.exports = {
   exits: {
 
     success: {
-      description: '2xx status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 201,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
+      description: 'The server responded with a 2xx status code.',
+      outputFriendlyName: 'Response data',
+      outputDescription: 'The response data from the server.',
+      outputExample: '*',
+      extendedDescription: 'Use the lower-level machine, `sendHttpRequest()`, if your response body is encoded in a format '+
+      'other than JSON, or if you need to access the exact status code and response headers.',
     },
 
     requestFailed: {
@@ -44,11 +48,11 @@ module.exports = {
     non200Response: {
       description: 'A non-2xx status code was returned from the server.',
       outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
+      outputDescription: 'The response from the server, including the status code, headers and raw body.',
       outputExample: {
-        status: 404,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
+        statusCode: 404,
+        headers: {},
+        body: '...[{"maybe some JSON": "like this"}]  (but could be any string)''
       }
     }
   },
@@ -66,17 +70,13 @@ module.exports = {
 
     // Send the HTTP request
     Http.sendHttpRequest({
-      method: 'post',
+      method: 'POST',
       url: url,
-      body: inputs.body
+      body: inputs.data
     }).exec({
       error: exits.error,
       requestFailed: exits.requestFailed,
-      badRequest: exits.non200Response,
-      unauthorized: exits.non200Response,
-      forbidden: exits.non200Response,
-      notFound: exits.non200Response,
-      serverError: exits.non200Response,
+      non200Response: exits.non200Response,
       success: exits.success
     });
 
