@@ -70,12 +70,7 @@ module.exports = {
     try {
       url = Urls.resolve({url: inputs.url}).execSync();
     } catch (e) {
-      switch (e.exit) {
-        case 'invalid':
-          return exits.error(new Error('The specified URL (`'+inputs.url+'`) is not a valid, fully-qualified URL.  Make sure to include the hostname (e.g. "example.com").'));
-        default:
-          return exits.error(new Error('Consistency violation: Unexpected error resolving the specified URL.  Details: '+e.stack));
-      }
+      return exits.error(e);
     }
 
     // Send the HTTP request
