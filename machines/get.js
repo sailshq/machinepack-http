@@ -25,7 +25,7 @@ module.exports = {
       extendedDescription:
       'If provided, this data will be automatically encoded in the URL\'s query string '+
       'and sent along with the request.  This is because, for caching and semantic reasons, '+
-      'GET requests [should not be sent without a body](http://stackoverflow.com/questions/978061/http-get-with-request-body).  '+
+      'GET requests [should not be sent with a body](http://stackoverflow.com/questions/978061/http-get-with-request-body).  '+
       'For additional encoding options, use the lower-level machine: `sendHttpRequest()`.',
       moreInfoUrl: 'https://en.wikipedia.org/wiki/Query_string'
     }
