@@ -7,9 +7,6 @@ module.exports = {
   description: 'Send a PATCH request and receive the response.',
 
 
-  sideEffects: 'idempotent',
-
-
   inputs: {
     url: {
       description: 'The URL where the PATCH request should be sent.',
