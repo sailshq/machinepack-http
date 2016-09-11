@@ -52,7 +52,7 @@ module.exports = {
       method: 'DELETE',
       url: url,
       baseUrl: baseUrl,
-      body: inputs.data
+      qs: inputs.data
     }).exec({
       error: function (err) { return exits.error(err); },
       requestFailed: function (err) { return exits.requestFailed(err); },

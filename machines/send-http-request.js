@@ -12,7 +12,12 @@ module.exports = {
   'It is often unnecessary to call this machine directly, as several higher-level '+
   'alternatives like "GET" and "POST" are available, and are easier to use.  '+
   '"Send custom HTTP request" provides more flexibility, and so it is a bit more complex.  '+
-  'But if your use case demands less commonly-used options, this machine is for you.',
+  'But if your use case demands less commonly-used options, this machine is for you.\n'+
+  '\n'+
+  'Internally, this machine uses the [`request` module](http://npmjs.com/package/request), '+
+  'a simplified HTTP request client for Node.js.  For advanced usage that is outside the '+
+  'scope of this machine (e.g. `multiplart/related` encoding for .NET WebAPI v4.0), write '+
+  'a custom machine and use `require(\'request\')` directly.',
 
 
   inputs: {
@@ -38,23 +43,34 @@ module.exports = {
       example: 'api.example.com/pets'
     },
 
-    params: {
-      description: 'Parameters to include in the request (e.g. {"email": "fooberbash.foo"}).',
-      extendedDescription: 'These values will be either encoded in the querystring or included as JSON in the body of the request based on the request method (GET/POST/etc.).  For non-GET requests, this input will be ignored if "body" is provided.',
+    qs: {
+      friendlyName: 'Data (query string)',
+      description: 'Optional dictionary of data to encode and append in the URL\'s query string.  Particularly useful for GET and DELETE requests.',
+      extendedDescription:
+      'If provided, this data will be automatically encoded in the URL\'s query string '+
+      'and sent along with the request.  For example, if `{ page: 2 }` is passed in, '+
+      'and the URL is "http://api.example.com/pets", the actual request URL will be '+
+      '"http://api.example.com/pets?page=2".',
+      moreInfoUrl: 'https://en.wikipedia.org/wiki/Query_string',
       example: {},
-      // e.g. {"email": "foo@fooberbash.foo"}
     },
 
     body: {
-      description: 'Body of the request (for PUT and POST).',
-      extendedDescription: 'This will override the value of the "params" input (if any) for non-GET requests unless "formData" is true.  Conversely, GET requests will ignore this input entirely.  To send an empty body with a non-GET request, do not provide a value for the "params" or "body" inputs.',
-      example: '*'
+      friendlyName: 'Data (request body)',
+      description: 'Optional data to encode and include in the request body.  Designed for POST, PUT, and PATCH requests.',
+      extendedDescription:
+      'If provided, this request data will be encoded into the appropriate format, and then transmitted '+
+      'in the body of the request.  By default, this data will be stringified as JSON, but that can be '+
+      'customized by setting a body encoding type (`enctype`).',
+      example: '==='
     },
 
-    formData: {
-      description: 'A boolean value indicating if the params should be sent as url encoded form data. If false JSON will be used.',
-      extendedDescription: 'If "formData" is true, the "body" input will be ignored in favor of the "params" input value (defaulting to an empty dictionary).',
-      example: false
+    enctype: {
+      friendlyName: 'Enctype (request body)',
+      description: 'Custom format to use when encoding data for the request body.  Either "application/json", "application/x-www-form-urlencoded", or "multipart/form-data".',
+      extendedDescription: 'This is only relevant when providing `body` data.  Also note that the appropriate "Content-Type" request header will be set automatically based on the configuration of this input.',
+      example: 'application/json',
+      defaultsTo: 'application/json'
     },
 
     headers: {
@@ -93,16 +109,11 @@ module.exports = {
 
   fn: function (inputs,exits) {
 
-    // Import `util`.
-    var util = require('util');
-
-    // Import `lodash` and `request`.
-    var _ = require('lodash');
+    // Import `request`.
     var request = require('request');
 
-    // Import `machinepack-urls` and `machinepack-json`.
+    // Import `machinepack-urls`.
     var Urls = require('machinepack-urls');
-    var Json = require('machinepack-json');
 
 
     // Ensure method is upper-cased.
@@ -120,40 +131,102 @@ module.exports = {
     }).execSync();
 
 
-    // Build the options to send to the `request` module.
-    var options = (function build_options_for_mikeal_request(){
+    // Now we'll build the options to send to the `request` module.
 
-      // Declare a var to hold the options, and set some base values.
-      var options = {
-        method: inputs.method,
-        url: targetUrl,
-        headers: inputs.headers||{}
-      };
+    // Start by declaring a var to hold the options and setting some base values.
+    var requestOpts = {
+      method: inputs.method,
+      url: targetUrl,
+      headers: {}
+    };
 
-      // For GET requests, set the query string to the specified params,
-      // and default to expecting a JSON response.
-      if (options.method === 'GET') {
-        return _.extend(options, {
-          qs: inputs.params,
-          json: true,
-        });
+
+    // If query string data was provided, then...
+    if (!_.isUndefined(inputs.qs)) {
+
+      // Set the request module's `qs` option so that the provided data
+      // will be appropriately encoded and appended to the URL.
+      requestOpts.qs = inputs.qs;
+    }
+
+
+    // If body data was provided, then...
+    if (!_.isUndefined(inputs.body)) {
+
+      // Determine if the provided body data is a dictionary (used below)
+      var isProvidedBodyDataDictionary = _.isObject(inputs.body) && !_.isArray(inputs.body) && !_.isFunction(inputs.body);
+
+      // Set the appropriate options for the request module so that the
+      // provided data will be appropriately encoded and included as the
+      // request body.
+      //
+      // > Note that the appropriate options to use here vary.
+      // > It depends on the encoding type (`enctype`).
+      switch (inputs.enctype) {
+        case 'application/json':
+          var stringifiedBodyData;
+          try {
+            stringifiedBodyData = JSON.stringify(inputs.body);
+          } catch (e) {
+            throw new Error('Cannot send request:  The provided data for the request body (`'+inputs.body+'`) cannot be stringified as JSON.  Make sure the specified data is JSON-compatible, or use a different encoding type.  Stringification error details: '+e.stack);
+          }
+
+          // Use the `form` option to URL-form-encode this data and
+          // include it as the body of the request.
+          //
+          // > Note that we're using `body` and not `json`.  Just because we're sending
+          // > the request body encoded as JSON _doesn't necessarily_ mean we want the
+          // > response body to be JSON-encoded as well.
+          // >
+          // > Also note that, since we're not using the `json` option, we have to set
+          // > the content-type header manually.
+          requestOpts.body = stringifiedBodyData;
+          requestOpts.headers = { 'Content-Type': 'application/json' };
+          break;
+
+        case 'application/x-www-form-urlencoded':
+          if (!isProvidedBodyDataDictionary) {
+            throw new Error('Cannot send request:  The provided data for the request body (`'+inputs.body+'`) cannot be encoded as "application/x-www-form-urlencoded".  Specify the data as a dictionary instead, or use a different encoding type.');
+          }
+
+          // Use the `form` option to URL-form-encode this data and
+          // include it as the body of the request.
+          //
+          // > Note that, since we're using `form`, the `request` module
+          // > will set the appropriate content type header automatically.
+          requestOpts.form = inputs.body;
+          break;
+
+        case 'multipart/form-data':
+          if (!isProvidedBodyDataDictionary) {
+            throw new Error('Cannot send request:  The provided data for the request body (`'+inputs.body+'`) cannot be encoded as "multipart/form-data".  Specify the data as a dictionary instead, or use a different encoding type.');
+          }
+
+          // Use the `form` option to multipart-form-encode this data and
+          // include it as the body of the request.
+          //
+          // > Note that, since we're using `formData`, the `request` module
+          // > will set the appropriate content type header automatically.
+          requestOpts.formData = inputs.body;
+          break;
+
+        default:
+          throw new Error('Cannot send request:  Specified enctype (`'+inputs.enctype+'`) is not recognized as the encoding type for the body of an HTTP request.');
       }
 
-      // Set the "form" or "json" options depending on whether `inputs.formData`
-      // was set.
-      if(inputs.formData) {
-        options.form = inputs.params || {};
-      } else {
-        options.json = inputs.body || inputs.params;
-      }
-
-      // Return the options dictionary we constructed.
-      return options;
-    })();
+    }//</if :: `body` was provided>
 
 
-    // Send the request using the options dictionary constructed above.
-    request(options, function gotResponse(err, response, httpBody) {
+    // >-
+    // Now fold in any custom headers that were provided.
+    //
+    // > We do this down here so that custom headers from userland
+    // > override the defaults we assigned above.
+    _.extend(requestOpts.headers, inputs.headers);
+
+
+    // And send the request using the options dictionary constructed above.
+    request(requestOpts, function gotResponse(err, httpResponse, responseBody) {
       try {
         // The request failed (disconnected from internet?  server down?)
         // Return the unknown error through the `requestFailed` exit.
@@ -167,14 +240,14 @@ module.exports = {
         // > Regardless of the status code sent in the response, we'll
         // > use this dictionary as our output when we exit below.
         var serverRes = {
-          statusCode: response.statusCode,
-          headers: response.headers || {},
-          body: httpBody || ''
+          statusCode: httpResponse.statusCode,
+          headers: httpResponse.headers || {},
+          body: responseBody || ''
         };
 
         // If the status code of the response is not in the 2xx range, then
         // return the server response dictionary through the `non2xxResponse` exit.
-        if (response.statusCode >= 300 || response.statusCode <= 199) {
+        if (httpResponse.statusCode >= 300 || httpResponse.statusCode <= 199) {
           return exits.non2xxResponse(serverRes);
         }
 
