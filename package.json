@@ -3,14 +3,14 @@
   "version": "2.4.0",
   "description": "Send an HTTP request.",
   "scripts": {
-    "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && mocha tests/** -R spec"
+    "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && mocha tests/*.js -R spec"
   },
   "keywords": [
     "http",
     "machines",
     "machinepack"
   ],
-  "author": "",
+  "author": "The Treeline Company",
   "license": "MIT",
   "dependencies": {
     "lodash": "3.10.1",
