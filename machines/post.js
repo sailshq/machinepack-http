@@ -7,84 +7,73 @@ module.exports = {
   description: 'Send a POST request and receive the response.',
 
 
-  extendedDescription: 'This machine is designed for making everyday requests to a JSON API.  '+
-  'For more flexibility, use the lower-level machine, `sendHttpRequest()`.',
+  extendedDescription: require('../constants/http-shortcuts.extended-description'),
 
 
   inputs: {
 
-    url: {
-      description: 'The URL where the POST request should be sent.',
-      extendedDescription: 'This should include the hostname and a protocol like "http://".',
-      example: 'https://example.com/api/v1/farms',
-      required: true
-    },
+    url: require('../constants/url.input'),
 
-    data: {
-      description: 'Data to send in the body of this request.',
-      extendedDescription: 'This request data will be transmitted as JSON.  Use the lower-level machine, '+
-      '`sendHttpRequest()`, for additional options.',
-      example: {}
-    }
+    baseUrl: require('../constants/base-url.input'),
+
+    data: require('../constants/data.input')
 
   },
 
   exits: {
 
-    success: {
-      description: 'The server responded with a 2xx status code.',
-      outputFriendlyName: 'Response data',
-      outputDescription: 'The response data from the server.',
-      outputExample: '*',
-      extendedDescription: 'Use the lower-level machine, `sendHttpRequest()`, if your response body is encoded in a format '+
-      'other than JSON, or if you need to access the exact status code and response headers.',
-    },
+    success: require('../constants/http-shortcuts-success.exit'),
 
-    requestFailed: {
-      description: 'Unexpected connection error: could not send or receive HTTP request.',
-      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
-    },
+    non200Response: require('../constants/non-200-response.exit'),
 
-    non200Response: {
-      description: 'A non-2xx status code was returned from the server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including the status code, headers and raw body.',
-      outputExample: {
-        statusCode: 404,
-        headers: {},
-        body: '...[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    }
+    requestFailed: require('../constants/request-failed.exit')
+
   },
 
   fn: function (inputs,exits) {
 
-    // Require machinepack-urls
-    var Urls = require('machinepack-urls');
-
     // Require this pack
     var Http = require('../');
 
-    // Make sure this is a fully-qualified URL, and coerce it if necessary.
-    var url;
-    try {
-      url = Urls.resolve({url: inputs.url}).execSync();
-    } catch (e) {
-      return exits.error(e);
-    }
-
-    // Send the HTTP request
+    // Send the HTTP request.
     Http.sendHttpRequest({
       method: 'POST',
       url: url,
+      baseUrl: baseUrl,
       body: inputs.data
     }).exec({
-      error: exits.error,
-      requestFailed: exits.requestFailed,
-      non200Response: exits.non200Response,
-      success: exits.success
-    });
+      error: function (err) { return exits.error(err); },
+      requestFailed: function (err) { return exits.requestFailed(err); },
+      non200Response: function (serverRes) { return exits.non200Response(serverRes); },
+      success: function (serverRes) {
 
-  },
+        // Now that the server responded successfully, we need to check out
+        // the response body and, if relevant, attempt to parse data from it.
+
+        // If there is no response body (i.e. `body` is `""`),
+        // then we'll interpret that as `null` and return that as
+        // our response data.
+        if (serverRes.body === '') {
+          return exits.success(null);
+        }
+
+        // --•
+        // Otherwise, attempt to parse the response body as JSON.
+        var resData;
+        try {
+          resData = JSON.parse(serverRes.body);
+        } catch (e) {
+          // If the raw response body string cannot be parsed as JSON,
+          // then interpret it as a string and just use the raw body.
+          resData = serverRes.body;
+        }
+
+        // And finally, return the response data through the `success` exit.
+        return exits.success(resData);
+
+      }//</on success :: Http.sendHttpRequest()>
+    });//</Http.sendHttpRequest()>
+  }
+
 
 };

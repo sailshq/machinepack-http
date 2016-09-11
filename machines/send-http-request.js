@@ -1,29 +1,41 @@
 module.exports = {
 
 
-  friendlyName: 'Send HTTP request',
+  friendlyName: 'Send custom HTTP request',
 
 
   description: 'Send an HTTP request and receive the response.',
 
 
+  extendedDescription:
+  'The "Send custom HTTP request" machine underlies all HTTP requests sent by this pack.  '+
+  'It is often unnecessary to call this machine directly, as several higher-level '+
+  'alternatives like "GET" and "POST" are available, and are easier to use.  '+
+  '"Send custom HTTP request" provides more flexibility, and so it is a bit more complex.  '+
+  'But if your use case demands less commonly-used options, this machine is for you.',
+
+
   inputs: {
 
+    method: {
+      description: 'The HTTP method or "verb".',
+      example: 'GET',
+      required: true
+    },
+
     url: {
+      friendlyName: 'URL',
       description: 'The URL where the request should be sent.',
-      extendedDescription: 'If `baseUrl` is specified, then `url` should be the "path" part of the URL-- e.g. everything after and including the leading slash ("/users/7/friends/search")',
-      example: '/pets/18',
+      extendedDescription: 'This is either (A) the fully-qualified URL, like "api.example.com/pets"; or (B) a URL path like "/posts/283119/comments" to use as a suffix for the provided `baseUrl`.',
+      example: '/7/friends/search',
       required: true
     },
 
     baseUrl: {
-      description: 'The base URL, including the hostname and a protocol like "http://".',
-      example: 'http://google.com'
-    },
-
-    method: {
-      description: 'The HTTP method or "verb".',
-      example: 'get'
+      friendlyName: 'Base URL',
+      description: 'Optional base URL to resolve the main URL against, with or without the protocol prefix (e.g. "http://").',
+      extendedDescription: 'If specified, this _must_ include the hostname (e.g. `api.example.com`).  It may also include a path (e.g. `http://api.example.com/pets`).',
+      example: 'api.example.com/pets'
     },
 
     params: {
@@ -47,8 +59,11 @@ module.exports = {
 
     headers: {
       description: 'Headers to include in the request (e.g. {"Content-Type": "application/json"}).',
-      example: {},
+      extendedDescription: 'Request headers should be provided as a dictionary, where each key is the name of a request header to send, '+
+      'and each right-hand-side value is the data to send for that header.  Header values are always strings.',
       // e.g. {"Accepts":"application/json"}
+      example: {},
+      defaultsTo: {}
     }
 
   },
@@ -56,75 +71,23 @@ module.exports = {
   exits: {
 
     success: {
-      description: '2xx status code returned from server.',
+      description: 'A 2xx status code was returned from the server.',
       outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
+      outputDescription: 'The response from the server, including the status code, headers, and raw body.',
       outputExample: {
-        status: 201,
-        headers: '{"Accepts":"application/json"}',
+        statusCode: 201,
+        headers: {},
         body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
+      },
+      extendedDescription:
+      'This server response contains a _raw response body_ (`body`), which is _always_ a string.  '+
+      'If you need to work with this response body in more depth, you may need to parse it '+
+      'into whichever format you are expecting (usually JSON--but occasionally XML, CSV, etc.)'
     },
 
-    notFound: {
-      description: '404 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 404,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
+    requestFailed: require('../constants/request-failed.exit'),
 
-    badRequest: {
-      description: '400 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 400,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    forbidden: {
-      description: '403 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 403,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    unauthorized: {
-      description: '401 status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 401,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    serverError: {
-      description: '5xx status code returned from server (this usually means something went wrong on the other end).',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 503,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
-
-    requestFailed: {
-      description: 'Unexpected connection error: could not send or receive HTTP request.',
-      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
-    },
+    non200Response: require('../constants/non-200-response.exit')
 
   },
 
@@ -142,42 +105,28 @@ module.exports = {
     var Json = require('machinepack-json');
 
 
-    // Default to a GET request.
-    inputs.method = (inputs.method||'get').toLowerCase();
+    // Ensure method is upper-cased.
+    inputs.method = inputs.method.toUpperCase();
 
-    // If `inputs.baseUrl` is specified, resolve the `inputs.url` from that base.
-    if (inputs.baseUrl) {
 
-      // Strip trailing slashes.
-      inputs.baseUrl = inputs.baseUrl.replace(/\/*$/, '');
+    // Resolve the fully-qualified destination URL.
+    // (remember: this also ensures that this is a fully qualified URL, including the protocol)
+    //
+    // > Note that if this fails, the error will be forwarded through our
+    // > `error` exit, which is proper since it'll be an input validation error.
+    var targetUrl = Urls.resolve({
+      baseUrl: inputs.baseUrl,
+      url: inputs.url
+    }).execSync();
 
-      // Ensure this is a fully qualified URL w/ the "http://" part,
-      // and if not, attempt to coerce.  Note that if this fails, the error
-      // will be forwarded through our `error` exit, which is proper since
-      // it'll be an input validation error.
-      inputs.baseUrl = Urls.resolve({url:inputs.baseUrl}).execSync();
-
-      // If a `baseUrl` was provided then `url` should just be the path part
-      // of the URL, so it should start w/ a leading slash.
-      inputs.url = inputs.url.replace(/^([^\/])/,'/$1');
-    }
-
-    // If no baseUrl was specified...
-    else {
-      // Coerce it to an empty string.
-      inputs.baseUrl = '';
-
-      // Ensure `url` is fully qualified (w/ the "http://" and hostname part).
-      inputs.url = Urls.resolve({url:inputs.url}).execSync();
-    }
 
     // Build the options to send to the `request` module.
     var options = (function build_options_for_mikeal_request(){
 
       // Declare a var to hold the options, and set some base values.
       var options = {
-        method: inputs.method.toUpperCase(),
-        url: inputs.baseUrl + inputs.url,
+        method: inputs.method,
+        url: targetUrl,
         headers: inputs.headers||{}
       };
 
@@ -202,48 +151,42 @@ module.exports = {
       return options;
     })();
 
+
     // Send the request using the options dictionary constructed above.
     request(options, function gotResponse(err, response, httpBody) {
-
-      // Wat (disconnected from internet maybe?)
-      // Return the unknown error through `requestFailed`.
-      if (err) {
-        return exits.requestFailed(err);
-      }
-
-      // If the status code of the response is not 2xx or 3xx...
-      if (response.statusCode >= 300 || response.statusCode < 200) {
-
-        // Determine which exit to call based on the status code.
-        var exitToCall;
-        switch (response.statusCode) {
-          case 400: exitToCall = exits.badRequest; break;
-          case 401: exitToCall = exits.unauthorized; break;
-          case 403: exitToCall = exits.forbidden; break;
-          case 404: exitToCall = exits.notFound; break;
-          default:
-            if (response.statusCode > 499 && response.statusCode < 600) {
-              exitToCall = exits.serverError;
-            }
-            else exitToCall = exits.error;
+      try {
+        // The request failed (disconnected from internet?  server down?)
+        // Return the unknown error through the `requestFailed` exit.
+        if (err) {
+          return exits.requestFailed(err);
         }
 
-        // Call the appropriate error with information from the server response.
-        return exitToCall({
-          status: response.statusCode,
-          headers: Json.stringifySafe({value: response.headers || {}}).execSync(),
-          body: Json.stringifySafe({value: httpBody || ''}).execSync()
-        });
-      }
+        // --•
+        // Otherwise, we'll build a normalized server response.
+        //
+        // > Regardless of the status code sent in the response, we'll
+        // > use this dictionary as our output when we exit below.
+        var serverRes = {
+          statusCode: response.statusCode,
+          headers: response.headers || {},
+          body: httpBody || ''
+        };
 
-      // Success!  Output the server response through the `success` exit.
-      return exits.success({
-        status: response.statusCode,
-        headers: Json.stringifySafe({value: response.headers || {}}).execSync(),
-        body: Json.stringifySafe({value: httpBody || ''}).execSync()
-      });
-    });
+        // If the status code of the response is not in the 2xx range, then
+        // return the server response dictionary through the `non2xxResponse` exit.
+        if (response.statusCode >= 300 || response.statusCode <= 199) {
+          return exits.non2xxResponse(serverRes);
+        }
 
-  },
+        // --•
+        // Otherwise, return the server response dictionary through
+        // the `success` exit.
+        return exits.success(serverRes);
+
+      } catch (e) { return exits.error(e); }
+    });//</request()>
+
+  }
+
 
 };
