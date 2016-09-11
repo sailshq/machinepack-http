@@ -14,9 +14,9 @@ module.exports = {
 
     url: {
       friendlyName: 'URL',
-      example: 'http://www.example.com',
-      description: 'The URL of the web page to fetched.',
+      description: 'The URL of the web page to fetch.',
       extendedDescription: 'This should include the hostname and a protocol like "http://".',
+      example: 'http://www.example.com/games/search?q=minecraft&page=14',
       required: true,
     }
 

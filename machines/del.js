@@ -21,13 +21,13 @@ module.exports = {
 
     data: {
       description: 'Optional data to send with this request.',
-      example: {},
       extendedDescription:
       'If provided, this data will be automatically encoded in the URL\'s query string '+
       'and sent along with the request.  This is because, for legacy and semantic reasons, '+
       'DELETE requests [should not be sent with a body](http://stackoverflow.com/questions/299628/is-an-entity-body-allowed-for-an-http-delete-request).  '+
       'For additional encoding options, use the lower-level machine: `sendHttpRequest()`.',
-      moreInfoUrl: 'https://en.wikipedia.org/wiki/Query_string'
+      moreInfoUrl: 'https://en.wikipedia.org/wiki/Query_string',
+      example: {}
     }
 
   },

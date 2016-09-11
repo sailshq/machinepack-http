@@ -17,7 +17,8 @@ module.exports = {
 
     statusCode: {
       description: 'The status code to negotiate.',
-      example: 403
+      example: 403,
+      required: true
     }
 
   },
@@ -100,6 +101,7 @@ module.exports = {
 
     return exits.other();
 
-  },
+  }
+
 
 };
