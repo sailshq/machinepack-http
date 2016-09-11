@@ -50,8 +50,8 @@ module.exports = {
     // Send the HTTP request.
     Http.sendHttpRequest({
       method: 'GET',
-      url: url,
-      baseUrl: baseUrl,
+      url: inputs.url,
+      baseUrl: inputs.baseUrl,
       qs: inputs.data
     }).exec({
       error: function (err) { return exits.error(err); },

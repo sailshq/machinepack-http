@@ -38,8 +38,8 @@ module.exports = {
     // Send the HTTP request.
     Http.sendHttpRequest({
       method: 'POST',
-      url: url,
-      baseUrl: baseUrl,
+      url: inputs.url,
+      baseUrl: inputs.baseUrl,
       body: inputs.data
     }).exec({
       error: function (err) { return exits.error(err); },

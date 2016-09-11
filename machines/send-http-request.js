@@ -101,9 +101,9 @@ module.exports = {
       'into whichever format you are expecting (usually JSON--but occasionally XML, CSV, etc.)'
     },
 
-    requestFailed: require('../constants/request-failed.exit'),
+    non200Response: require('../constants/non-200-response.exit'),
 
-    non200Response: require('../constants/non-200-response.exit')
+    requestFailed: require('../constants/request-failed.exit')
 
   },
 
@@ -248,7 +248,7 @@ module.exports = {
         // If the status code of the response is not in the 2xx range, then
         // return the server response dictionary through the `non2xxResponse` exit.
         if (httpResponse.statusCode >= 300 || httpResponse.statusCode <= 199) {
-          return exits.non2xxResponse(serverRes);
+          return exits.non200Response(serverRes);
         }
 
         // --•

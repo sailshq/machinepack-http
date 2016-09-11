@@ -46,7 +46,7 @@ module.exports = {
     // Send the HTTP request.
     Http.sendHttpRequest({
       method: 'GET',
-      url: url
+      url: inputs.url
     }).exec({
       error: function (err) { return exits.error(err); },
       requestFailed: function (err) { return exits.requestFailed(err); },
@@ -59,12 +59,12 @@ module.exports = {
         // As a nicety, attempt to parse the response body as JSON, in case
         // the response body came back encoded as JSON.
         try {
-          html = JSON.parse(response.body);
+          html = JSON.parse(serverRes.body);
         }
         // If it cannot be parsed as JSON (i.e. the usual case), then use
         // the raw response body as our result HTML.
         catch (e) {
-          html = response.body;
+          html = serverRes.body;
         }
 
         // Send the HTML through the `success` exit.
