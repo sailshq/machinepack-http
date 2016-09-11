@@ -1,80 +1,91 @@
 module.exports = {
 
 
-  friendlyName: 'Send GET request',
+  friendlyName: 'GET',
 
 
   description: 'Send a GET request and receive the response.',
+
+
+  extendedDescription: require('../constants/http-shortcuts.extended-description'),
 
 
   sideEffects: 'cacheable',
 
 
   inputs: {
-    url: {
-      description: 'The URL where the GET request should be sent.',
-      extendedDescription: 'This should include the hostname and a protocol like "http://".',
-      example: 'http://www.example.com',
-      required: true
+
+    url: require('../constants/url.input'),
+
+    baseUrl: require('../constants/base-url.input'),
+
+    data: {
+      description: 'Optional data to send with this request.',
+      example: {},
+      extendedDescription:
+      'If provided, this data will be automatically encoded in the URL\'s query string '+
+      'and sent along with the request.  This is because, for caching and semantic reasons, '+
+      'GET requests [should not be sent without a body](http://stackoverflow.com/questions/978061/http-get-with-request-body).  '+
+      'For additional encoding options, use the lower-level machine: `sendHttpRequest()`.',
+      moreInfoUrl: 'https://en.wikipedia.org/wiki/Query_string'
     }
+
   },
 
   exits: {
 
-    success: {
-      description: '2xx status code returned from server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 200,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    },
+    success: require('../constants/http-shortcuts-success.exit'),
 
-    requestFailed: {
-      description: 'Unexpected connection error: could not send or receive HTTP request.',
-      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
-    },
+    non200Response: require('../constants/non-200-response.exit'),
 
-    non200Response: {
-      description: 'A non-2xx status code was returned from the server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 404,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    }
+    requestFailed: require('../constants/request-failed.exit')
+
   },
 
   fn: function (inputs,exits) {
 
-    // Require machinepack-urls
-    var Urls = require('machinepack-urls');
-
     // Require this pack
     var Http = require('../');
 
-    // Make sure this is a fully-qualified URL, and coerce it if necessary.
-    var url = Urls.resolve({url: inputs.url}).execSync();
-
-    // Send the HTTP request
+    // Send the HTTP request.
     Http.sendHttpRequest({
-      method: 'get',
-      url: url
+      method: 'GET',
+      url: url,
+      baseUrl: baseUrl,
+      body: inputs.data
     }).exec({
-      error: exits.error,
-      requestFailed: exits.requestFailed,
-      badRequest: exits.non200Response,
-      unauthorized: exits.non200Response,
-      forbidden: exits.non200Response,
-      notFound: exits.non200Response,
-      serverError: exits.non200Response,
-      success: exits.success
-    });
+      error: function (err) { return exits.error(err); },
+      requestFailed: function (err) { return exits.requestFailed(err); },
+      non200Response: function (serverRes) { return exits.non200Response(serverRes); },
+      success: function (serverRes) {
 
-  },
+        // Now that the server responded successfully, we need to check out
+        // the response body and, if relevant, attempt to parse data from it.
+
+        // If there is no response body (i.e. `body` is `""`),
+        // then we'll interpret that as `null` and return that as
+        // our response data.
+        if (serverRes.body === '') {
+          return exits.success(null);
+        }
+
+        // --•
+        // Otherwise, attempt to parse the response body as JSON.
+        var resData;
+        try {
+          resData = JSON.parse(serverRes.body);
+        } catch (e) {
+          // If the raw response body string cannot be parsed as JSON,
+          // then interpret it as a string and just use the raw body.
+          resData = serverRes.body;
+        }
+
+        // And finally, return the response data through the `success` exit.
+        return exits.success(resData);
+
+      }//</on success :: Http.sendHttpRequest()>
+    });//</Http.sendHttpRequest()>
+  }
+
 
 };
