@@ -256,7 +256,7 @@ describe('machinepack-http: send-http-request', function() {
 
 
 
-  it('should trigger `notFound` when a 404 status code is received', function(done) {
+  it('should trigger `non200Response` when a 404 status code is received', function(done) {
 
     Http.sendHttpRequest({
       method: 'GET',
@@ -275,7 +275,7 @@ describe('machinepack-http: send-http-request', function() {
 
   });
 
-  it('should trigger `badRequest` when a 400 status code is received', function(done) {
+  it('should trigger `non200Response` when a 400 status code is received', function(done) {
 
     Http.sendHttpRequest({
       method: 'GET',
@@ -294,7 +294,7 @@ describe('machinepack-http: send-http-request', function() {
 
   });
 
-  it('should trigger `forbidden` when a 403 status code is received', function(done) {
+  it('should trigger `non200Response` when a 403 status code is received', function(done) {
 
     Http.sendHttpRequest({
       method: 'GET',
@@ -313,7 +313,7 @@ describe('machinepack-http: send-http-request', function() {
 
   });
 
-  it('should trigger `unauthorized` when a 401 status code is received', function(done) {
+  it('should trigger `non200Response` when a 401 status code is received', function(done) {
 
     Http.sendHttpRequest({
       method: 'GET',
@@ -332,7 +332,7 @@ describe('machinepack-http: send-http-request', function() {
 
   });
 
-  it('should trigger `serverError` when a 5xx status code is received', function(done) {
+  it('should trigger `non200Response` when a 5xx status code is received', function(done) {
 
     Http.sendHttpRequest({
       method: 'GET',
