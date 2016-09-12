@@ -31,8 +31,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/html',
     }).exec({
-      success: function(response) {
-        assert.equal(response, '<html><body>hi!</body></html>');
+      success: function(html) {
+        assert.equal(html, '<html><body>hi!</body></html>');
         return done();
       },
       error: done
@@ -48,8 +48,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 404);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 404);
         return done();
       },
       error: done
@@ -65,8 +65,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 400);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 400);
         return done();
       },
       error: done
@@ -82,8 +82,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 403);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 403);
         return done();
       },
       error: done
@@ -99,8 +99,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 401);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 401);
         return done();
       },
       error: done
@@ -116,8 +116,8 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 500);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 500);
         return done();
       },
       error: done
@@ -134,7 +134,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },
-      requestFailed: function(response) {
+      requestFailed: function(err) {
         return done();
       },
       error: done

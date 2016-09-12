@@ -26,19 +26,17 @@ describe('machinepack-http: get', function() {
     });
   });
 
-  it('should trigger `success` and get the correct status code, body and headers when requesting a valid path', function(done) {
+
+  it('should properly encode and send query string params AND properly receive and decode response data', function(done) {
 
     Http.get({
       url: 'http://localhost:1492/ok?owl=hoot',
+      data: {age: 99},
     }).exec({
-      success: function(response) {
-        assert.equal(response.status, 200);
-        var body = JSON.parse(response.body);
-        var headers = JSON.parse(response.headers);
-        assert.equal(body.method, 'GET');
-        assert.equal(body.params.owl, 'hoot');
-        assert.equal(headers['x-some-header'], 'foobar!');
-        assert.equal(headers['x-powered-by'], 'Sails <sailsjs.org>');
+      success: function(data) {
+        assert.equal(data.method, 'GET');
+        assert.equal(data.params.owl, 'hoot');
+        assert.equal(data.params.age, 99);
         return done();
       },
       error: done
@@ -55,7 +53,7 @@ describe('machinepack-http: get', function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
       non200Response: function(response) {
-        assert.equal(response.status, 404);
+        assert.equal(response.statusCode, 404);
         return done();
       },
       error: done
@@ -72,7 +70,7 @@ describe('machinepack-http: get', function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
       non200Response: function(response) {
-        assert.equal(response.status, 400);
+        assert.equal(response.statusCode, 400);
         return done();
       },
       error: done
@@ -89,7 +87,7 @@ describe('machinepack-http: get', function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
       non200Response: function(response) {
-        assert.equal(response.status, 403);
+        assert.equal(response.statusCode, 403);
         return done();
       },
       error: done
@@ -106,7 +104,7 @@ describe('machinepack-http: get', function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
       non200Response: function(response) {
-        assert.equal(response.status, 401);
+        assert.equal(response.statusCode, 401);
         return done();
       },
       error: done
@@ -123,7 +121,7 @@ describe('machinepack-http: get', function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
       non200Response: function(response) {
-        assert.equal(response.status, 500);
+        assert.equal(response.statusCode, 500);
         return done();
       },
       error: done

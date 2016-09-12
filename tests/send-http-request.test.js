@@ -26,12 +26,60 @@ describe('machinepack-http: send-http-request', function() {
     });
   });
 
-  it('should trigger `success` and get the correct status code, body and headers when requesting a valid path via GET', function(done) {
+
+  it('should properly encode and send body+qs params AND properly receive response data', function(done) {
 
     Http.sendHttpRequest({
-      url: 'ok',
+      method: 'patch',
       baseUrl: 'http://localhost:1492',
-      params: {
+      url: 'ok?owl=hoot',
+      qs: {
+        bird: 'big'
+      },
+      body: {
+        age: 99
+      },
+      headers: {
+        'x-beans-beans': 'the musical fruit'
+      }
+    }).exec({
+      error: function (err) {
+        return done(err);
+      },
+      success: function(serverRes) {
+
+        // Check status code.
+        assert.equal(serverRes.statusCode, 200);
+
+        // Check response headers.
+        assert.equal(serverRes.headers['x-some-header'], 'foobar!');
+        assert.equal(serverRes.headers['x-powered-by'], 'Sails <sailsjs.org>');
+
+        // Decode and check response body.
+        var decodedBody = JSON.parse(serverRes.body);
+        assert.equal(decodedBody.method, 'PATCH');
+        assert.equal(decodedBody.params.owl, 'hoot');
+        assert.equal(decodedBody.params.bird, 'big');
+        assert.equal(decodedBody.params.age, 99);
+        assert.equal(decodedBody.headers['x-beans-beans'], 'the musical fruit');
+
+        return done();
+      }
+    });
+
+  });
+
+
+  it('should work as expected when hit w/ a POST too', function(done) {
+
+    Http.sendHttpRequest({
+      method: 'POST',
+      baseUrl: 'http://localhost:1492',
+      url: '/ok?hungry=hippo',
+      qs: {
+        bird: 'big'
+      },
+      body: {
         owl: 'hoot',
         age: 99
       },
@@ -39,30 +87,45 @@ describe('machinepack-http: send-http-request', function() {
         'x-beans-beans': 'the musical fruit'
       }
     }).exec({
-      success: function(response) {
-        assert.equal(response.status, 200);
-        var body = JSON.parse(response.body);
-        var headers = JSON.parse(response.headers);
-        assert.equal(body.method, 'GET');
-        assert.equal(body.params.owl, 'hoot');
-        assert.equal(body.params.age, 99);
-        assert.equal(body.headers['x-beans-beans'], 'the musical fruit');
-        assert.equal(headers['x-some-header'], 'foobar!');
-        assert.equal(headers['x-powered-by'], 'Sails <sailsjs.org>');
-        return done();
+      error: function (err) {
+        return done(err);
       },
-      error: done
+      success: function(serverRes) {
+
+        // Check status code.
+        assert.equal(serverRes.statusCode, 200);
+
+        // Check response headers.
+        assert.equal(serverRes.headers['x-some-header'], 'foobar!');
+        assert.equal(serverRes.headers['x-powered-by'], 'Sails <sailsjs.org>');
+
+        // Decode and check response body.
+        var decodedBody = JSON.parse(serverRes.body);
+        assert.equal(decodedBody.method, 'POST');
+        assert.equal(decodedBody.params.owl, 'hoot');
+        assert.equal(decodedBody.params.bird, 'big');
+        assert.equal(decodedBody.params.hungry, 'hippo');
+        assert.equal(decodedBody.params.age, 99);
+        assert.equal(decodedBody.headers['x-beans-beans'], 'the musical fruit');
+        return done();
+      }
     });
 
   });
 
-  it('should trigger `success` and get the correct status code, body and headers when requesting a valid path via POST', function(done) {
+
+
+  it('should still work exactly as expected when using "application/x-www-form-urlencoded"', function(done) {
 
     Http.sendHttpRequest({
-      url: 'ok?hungry=hippo',
+      method: 'post',
       baseUrl: 'http://localhost:1492',
-      method: 'POST',
-      params: {
+      url: 'ok?hungry=hippo',
+      qs: {
+        bird: 'big'
+      },
+      enctype: 'application/x-www-form-urlencoded',
+      body: {
         owl: 'hoot',
         age: 99
       },
@@ -70,53 +133,28 @@ describe('machinepack-http: send-http-request', function() {
         'x-beans-beans': 'the musical fruit'
       }
     }).exec({
-      success: function(response) {
-        assert.equal(response.status, 200);
-        var body = JSON.parse(response.body);
-        var headers = JSON.parse(response.headers);
-        assert.equal(body.method, 'POST');
-        assert.equal(body.params.owl, 'hoot');
-        assert.equal(body.params.age, 99);
-        assert.equal(body.params.hungry, 'hippo');
-        assert.equal(body.headers['x-beans-beans'], 'the musical fruit');
-        assert.equal(headers['x-some-header'], 'foobar!');
-        assert.equal(headers['x-powered-by'], 'Sails <sailsjs.org>');
+      error: function (err) {
+        return done(err);
+      },
+      success: function(serverRes) {
+
+        // Check status code.
+        assert.equal(serverRes.statusCode, 200);
+
+        // Check response headers.
+        assert.equal(serverRes.headers['x-some-header'], 'foobar!');
+        assert.equal(serverRes.headers['x-powered-by'], 'Sails <sailsjs.org>');
+
+        // Decode and check response body.
+        var decodedBody = JSON.parse(serverRes.body);
+        assert.equal(decodedBody.method, 'POST');
+        assert.equal(decodedBody.params.owl, 'hoot');
+        assert.equal(decodedBody.params.bird, 'big');
+        assert.equal(decodedBody.params.hungry, 'hippo');
+        assert.equal(decodedBody.params.age, 99);
+        assert.equal(decodedBody.headers['x-beans-beans'], 'the musical fruit');
         return done();
-      },
-      error: done
-    });
-
-  });
-
-  it('should trigger `success` and get the correct status code, body and headers when requesting a valid path via POST and formData: true', function(done) {
-
-    Http.sendHttpRequest({
-      url: 'ok?hungry=hippo',
-      baseUrl: 'http://localhost:1492',
-      method: 'POST',
-      params: {
-        owl: 'hoot',
-        age: 99
-      },
-      headers: {
-        'x-beans-beans': 'the musical fruit'
-      },
-      formData: true
-    }).exec({
-      success: function(response) {
-        assert.equal(response.status, 200);
-        var body = JSON.parse(JSON.parse(response.body));
-        var headers = JSON.parse(response.headers);
-        assert.equal(body.method, 'POST');
-        assert.equal(body.params.owl, 'hoot');
-        assert.equal(body.params.age, 99);
-        assert.equal(body.params.hungry, 'hippo');
-        assert.equal(body.headers['x-beans-beans'], 'the musical fruit');
-        assert.equal(headers['x-some-header'], 'foobar!');
-        assert.equal(headers['x-powered-by'], 'Sails <sailsjs.org>');
-        return done();
-      },
-      error: done
+      }
     });
 
   });
@@ -125,14 +163,15 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `notFound` when a 404 status code is received', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'notFound',
       baseUrl: 'http://localhost:1492'
     }).exec({
       success: function() {
         return done('Expected the `notFound` exit to be triggered, not `success`!');
       },
-      notFound: function(response) {
-        assert.equal(response.status, 404);
+      non200Response: function(response) {
+        assert.equal(response.statusCode, 404);
         return done();
       },
       error: done
@@ -143,14 +182,15 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `badRequest` when a 400 status code is received', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'badRequest',
       baseUrl: 'http://localhost:1492'
     }).exec({
       success: function() {
         return done('Expected the `badRequest` exit to be triggered, not `success`!');
       },
-      badRequest: function(response) {
-        assert.equal(response.status, 400);
+      non200Response: function(response) {
+        assert.equal(response.statusCode, 400);
         return done();
       },
       error: done
@@ -161,14 +201,15 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `forbidden` when a 403 status code is received', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'forbidden',
       baseUrl: 'http://localhost:1492'
     }).exec({
       success: function() {
         return done('Expected the `forbidden` exit to be triggered, not `success`!');
       },
-      forbidden: function(response) {
-        assert.equal(response.status, 403);
+      non200Response: function(response) {
+        assert.equal(response.statusCode, 403);
         return done();
       },
       error: done
@@ -179,14 +220,15 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `unauthorized` when a 401 status code is received', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'unauthorized',
       baseUrl: 'http://localhost:1492'
     }).exec({
       success: function() {
         return done('Expected the `unauthorized` exit to be triggered, not `success`!');
       },
-      unauthorized: function(response) {
-        assert.equal(response.status, 401);
+      non200Response: function(response) {
+        assert.equal(response.statusCode, 401);
         return done();
       },
       error: done
@@ -197,14 +239,15 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `serverError` when a 5xx status code is received', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'error',
       baseUrl: 'http://localhost:1492'
     }).exec({
       success: function() {
         return done('Expected the `serverError` exit to be triggered, not `success`!');
       },
-      serverError: function(response) {
-        assert.equal(response.status, 500);
+      non200Response: function(response) {
+        assert.equal(response.statusCode, 500);
         return done();
       },
       error: done
@@ -215,6 +258,7 @@ describe('machinepack-http: send-http-request', function() {
   it('should trigger `requestFailed` when attempting to reach a server that doesn\'t exist', function(done) {
 
     Http.sendHttpRequest({
+      method: 'GET',
       url: 'error',
       baseUrl: 'http://localhosty.cakes:9999'
     }).exec({

@@ -129,7 +129,6 @@ module.exports = {
       baseUrl: inputs.baseUrl,
       url: inputs.url
     }).execSync();
-    console.log('targetUrl',targetUrl);
 
 
     // Now we'll build the options to send to the `request` module.
