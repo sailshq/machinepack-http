@@ -129,6 +129,7 @@ module.exports = {
       baseUrl: inputs.baseUrl,
       url: inputs.url
     }).execSync();
+    console.log('targetUrl',targetUrl);
 
 
     // Now we'll build the options to send to the `request` module.
@@ -226,7 +227,7 @@ module.exports = {
 
 
     // And send the request using the options dictionary constructed above.
-    request(requestOpts, function gotResponse(err, httpResponse, responseBody) {
+    request(requestOpts, function gotResponse(err, httpResponse) {
       try {
         // The request failed (disconnected from internet?  server down?)
         // Return the unknown error through the `requestFailed` exit.
@@ -242,7 +243,7 @@ module.exports = {
         var serverRes = {
           statusCode: httpResponse.statusCode,
           headers: httpResponse.headers || {},
-          body: responseBody || ''
+          body: httpResponse.body || ''
         };
 
         // If the status code of the response is not in the 2xx range, then
