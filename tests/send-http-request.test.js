@@ -209,6 +209,53 @@ describe('machinepack-http: send-http-request', function() {
 
 
 
+  it('should still prioritize dynamically-encoded data provided as `qs` over existing stuff in the query string', function(done) {
+
+    Http.sendHttpRequest({
+      method: 'post',
+      baseUrl: 'http://localhost:1492',
+      url: 'ok?hungry=hippo',
+      qs: {
+        bird: 'big',
+        hungry: 'daemon'
+      },
+      enctype: 'multipart/form-data',
+      body: {
+        owl: 'hoot',
+        age: 99
+      },
+      headers: {
+        'x-beans-beans': 'the musical fruit'
+      }
+    }).exec({
+      error: function (err) {
+        return done(err);
+      },
+      success: function(serverRes) {
+
+        // Check status code.
+        assert.equal(serverRes.statusCode, 200);
+
+        // Check response headers.
+        assert.equal(serverRes.headers['x-some-header'], 'foobar!');
+        assert.equal(serverRes.headers['x-powered-by'], 'Sails <sailsjs.org>');
+
+        // Decode and check response body.
+        var decodedBody = JSON.parse(serverRes.body);
+        assert.equal(decodedBody.method, 'POST');
+        assert.equal(decodedBody.params.owl, 'hoot');
+        assert.equal(decodedBody.params.bird, 'big');
+        assert.equal(decodedBody.params.hungry, 'daemon');
+        assert.equal(decodedBody.params.age, 99);
+        assert.equal(decodedBody.headers['x-beans-beans'], 'the musical fruit');
+        return done();
+      }
+    });
+
+  });
+
+
+
   it('should trigger `notFound` when a 404 status code is received', function(done) {
 
     Http.sendHttpRequest({
