@@ -112,6 +112,9 @@ module.exports = {
     // Import `request`.
     var request = require('request');
 
+    // Import `lodash`.
+    var _ = require('lodash');
+
     // Import `machinepack-urls`.
     var Urls = require('machinepack-urls');
 
