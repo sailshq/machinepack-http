@@ -4,7 +4,7 @@ module.exports = {
   friendlyName: 'Negotiate HTTP status code',
 
 
-  description: 'Trigger a specific exit based on the status code returned with an HTTP response.',
+  description: 'Trigger a specific exit based on the provided HTTP status code.',
 
 
   sync: true,
@@ -17,7 +17,8 @@ module.exports = {
 
     statusCode: {
       description: 'The status code to negotiate.',
-      example: 403
+      example: 403,
+      required: true
     }
 
   },
@@ -100,6 +101,7 @@ module.exports = {
 
     return exits.other();
 
-  },
+  }
+
 
 };

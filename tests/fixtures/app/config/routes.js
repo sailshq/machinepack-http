@@ -40,6 +40,10 @@ module.exports.routes = {
   '/ok': function (req, res) {
     res.header('x-some-header', 'foobar!');
     res.header('content-type', 'application/json');
+    // console.log('all params:',req.allParams());
+    // console.log('req.query:',req.query);
+    // console.log('req.body:',req.body);
+    // console.log('req.url:',req.url);
     return res.json({params: req.params.all(), headers: req.headers, method: req.method});
   },
 

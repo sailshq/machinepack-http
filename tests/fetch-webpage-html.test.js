@@ -3,7 +3,7 @@ var path = require('path');
 var SailsApp = require('sails').Sails;
 var Http = require('../');
 
-describe('machinepack-http: post', function() {
+describe('machinepack-http: fetch-webpage-html', function() {
 
   var Sails = new SailsApp();
   var app;
@@ -26,23 +26,13 @@ describe('machinepack-http: post', function() {
     });
   });
 
-  it('should trigger `success` and get the correct status code, body and headers when requesting a valid path', function(done) {
+  it('should trigger `success` and get the correct HTML when requesting a valid path', function(done) {
 
-    Http.post({
-      url: 'http://localhost:1492/ok?owl=hoot',
-      body: {
-        age: 99
-      }
+    Http.fetchWebpageHtml({
+      url: 'http://localhost:1492/html',
     }).exec({
-      success: function(response) {
-        assert.equal(response.status, 200);
-        var body = JSON.parse(response.body);
-        var headers = JSON.parse(response.headers);
-        assert.equal(body.method, 'POST');
-        assert.equal(body.params.owl, 'hoot');
-        assert.equal(body.params.age, 99);
-        assert.equal(headers['x-some-header'], 'foobar!');
-        assert.equal(headers['x-powered-by'], 'Sails <sailsjs.org>');
+      success: function(html) {
+        assert.equal(html, '<html><body>hi!</body></html>');
         return done();
       },
       error: done
@@ -52,14 +42,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `non200Response` when a 404 status code is received', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'http://localhost:1492/notFound',
     }).exec({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 404);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 404);
         return done();
       },
       error: done
@@ -69,14 +59,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `non200Response` when a 400 status code is received', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'http://localhost:1492/badRequest',
     }).exec({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 400);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 400);
         return done();
       },
       error: done
@@ -86,14 +76,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `non200Response` when a 403 status code is received', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'http://localhost:1492/forbidden',
     }).exec({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 403);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 403);
         return done();
       },
       error: done
@@ -103,14 +93,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `non200Response` when a 401 status code is received', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'http://localhost:1492/unauthorized',
     }).exec({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 401);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 401);
         return done();
       },
       error: done
@@ -120,14 +110,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `non200Response` when a 5xx status code is received', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'http://localhost:1492/error',
     }).exec({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
-      non200Response: function(response) {
-        assert.equal(response.status, 500);
+      non200Response: function(serverRes) {
+        assert.equal(serverRes.statusCode, 500);
         return done();
       },
       error: done
@@ -137,14 +127,14 @@ describe('machinepack-http: post', function() {
 
   it('should trigger `requestFailed` when attempting to reach a server that doesn\'t exist', function(done) {
 
-    Http.post({
+    Http.fetchWebpageHtml({
       url: 'error',
       baseUrl: 'http://localhosty.cakes:9999'
     }).exec({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },
-      requestFailed: function(response) {
+      requestFailed: function(err) {
         return done();
       },
       error: done

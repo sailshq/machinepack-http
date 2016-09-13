@@ -14,9 +14,9 @@ module.exports = {
 
     url: {
       friendlyName: 'URL',
-      example: 'http://www.example.com',
-      description: 'The URL of the web page to fetched.',
+      description: 'The URL of the web page to fetch.',
       extendedDescription: 'This should include the hostname and a protocol like "http://".',
+      example: 'http://www.example.com/games/search?q=minecraft&page=14',
       required: true,
     }
 
@@ -27,61 +27,44 @@ module.exports = {
     success: {
       outputExample: '<html><body><h1>Hello world</h1></body></html>',
       outputFriendlyName: 'Webpage HTML',
-      outputDescription: 'The HTML contents of the fetched web page.'
+      outputDescription: 'The HTML contents of the fetched web page.',
+      extendedDescription: 'If the server does not send a response body, this will be set to "" (empty string).'
     },
 
-    requestFailed: {
-      description: 'Unexpected connection error: could not send or receive HTTP request.',
-      extendedDescription: 'Could not send HTTP request; perhaps network connection was lost?'
-    },
+    non200Response: require('../constants/non-200-response.exit'),
 
-    non200Response: {
-      description: 'A non-2xx status code was returned from the server.',
-      outputFriendlyName: 'Server response',
-      outputDescription: 'The response from the server, including status, headers and body.',
-      outputExample: {
-        status: 404,
-        headers: '{"Accepts":"application/json"}',
-        body: '[{"maybe some JSON": "like this"}]  (but could be any string)'
-      }
-    }
+    requestFailed: require('../constants/request-failed.exit')
 
   },
-  fn: function(inputs, exits) {
 
-    // Require machinepack-urls
-    var Urls = require('machinepack-urls');
+
+  fn: function(inputs, exits) {
 
     // Require this pack
     var Http = require('../');
 
-    // Make sure this is a fully-qualified URL, and coerce it if necessary.
-    var url = Urls.resolve({url: inputs.url}).execSync();
-
-    // Send the HTTP request
+    // Send the HTTP request.
     Http.sendHttpRequest({
-      method: 'get',
-      url: url
+      method: 'GET',
+      url: inputs.url
     }).exec({
-      error: exits.error,
-      requestFailed: exits.requestFailed,
-      badRequest: exits.non200Response,
-      unauthorized: exits.non200Response,
-      forbidden: exits.non200Response,
-      notFound: exits.non200Response,
-      serverError: exits.non200Response,
-      success: function (response){
+      error: function (err) { return exits.error(err); },
+      requestFailed: function (err) { return exits.requestFailed(err); },
+      non200Response: function (serverRes) { return exits.non200Response(serverRes); },
+      success: function (serverRes) {
 
         // Declare a var to hold the response HTML
         var html;
 
-        // Attempt to parse the response in case it came back as a JSON string
+        // As a nicety, attempt to parse the response body as JSON, in case
+        // the response body came back encoded as JSON.
         try {
-          html = JSON.parse(response.body);
+          html = JSON.parse(serverRes.body);
         }
-        // Otherwise use the raw response
+        // If it cannot be parsed as JSON (i.e. the usual case), then use
+        // the raw response body as our result HTML.
         catch (e) {
-          html = response.body;
+          html = serverRes.body;
         }
 
         // Send the HTML through the `success` exit.
@@ -90,5 +73,6 @@ module.exports = {
     });
 
   }
+
 
 };
