@@ -28,7 +28,7 @@
     "test-machinepack-mocha": "^2.1.1"
   },
   "machinepack": {
-    "friendlyName": "http",
+    "friendlyName": "HTTP",
     "machineDir": "machines/",
     "machines": [
       "send-http-request",
