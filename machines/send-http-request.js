@@ -67,8 +67,8 @@ module.exports = {
 
     enctype: {
       friendlyName: 'Enctype (request body)',
-      description: 'Custom format to use when encoding data for the request body.  Either "application/json", "application/x-www-form-urlencoded", or "multipart/form-data".',
-      extendedDescription: 'This is only relevant when providing `body` data.  Also note that the appropriate "Content-Type" request header will be set automatically based on the configuration of this input.',
+      description: 'Custom format to use when encoding data for the request body.',
+      extendedDescription: 'Either "application/json", "application/x-www-form-urlencoded", or "multipart/form-data".  This is only relevant when providing `body` data.  Also note that the appropriate "Content-Type" request header will be set automatically based on the configuration of this input.',
       example: 'application/json',
       defaultsTo: 'application/json'
     },
