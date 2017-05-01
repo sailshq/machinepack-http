@@ -110,7 +110,7 @@ module.exports = {
       // return the server response dictionary through the `non2xxResponse` exit.
       if (httpResponse.statusCode >= 300 || httpResponse.statusCode <= 199) {
         alreadyExited = 'non200Response';
-        return exits.non200Response(serverRes);
+        return exits.non200Response(httpResponse);
       }
 
       alreadyExited = 'success';
