@@ -2,7 +2,7 @@
 
 # machinepack-http
 
-Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.  
+Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.
 
 
 > mp-http is focused on immediate productivity with everyday cloud API interactions you're likely to encounter in web, mobile, and IoT apps.  Think of it as a simple, practical utility for simple, everyday cloud API interactions and integration tasks: scenarios where you don't need the flexibility of custom multipart POSTs or support for the HAR spec.

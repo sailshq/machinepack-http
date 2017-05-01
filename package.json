@@ -1,29 +1,40 @@
 {
   "name": "machinepack-http",
   "version": "3.1.0",
-  "description": "Send an HTTP request.",
+  "description": "Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.",
   "scripts": {
-    "test": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && mocha tests/*.js -R spec"
+    "test": "npm run lint && npm run custom-tests",
+    "custom-tests": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && mocha tests/*.js -R spec",
+    "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0"
   },
   "keywords": [
     "http",
+    "api",
+    "cloud",
+    "rest-api",
+    "curl",
+    "scraping",
+    "stream",
+    "request",
+    "response",
     "machines",
     "machinepack"
   ],
-  "author": "The Treeline Company",
+  "author": "The Sails Company",
   "license": "MIT",
   "dependencies": {
-    "lodash": "3.10.1",
+    "@sailshq/lodash": "^3.10.2",
     "machine": "^13.0.0-10",
     "machinepack-urls": "^6.0.0-2",
-    "request": "2.74.0"
+    "request": "2.81.0"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:mikermcneil/machinepack-http.git"
   },
   "devDependencies": {
-    "mocha": "3.0.0",
+    "eslint": "3.5.0",
+    "mocha": "3.0.2",
     "sails": "^0.12.4",
     "test-machinepack-mocha": "^2.1.1"
   },

@@ -78,7 +78,7 @@ module.exports = {
     var request = require('request');
 
     // Import `lodash`.
-    var _ = require('lodash');
+    var _ = require('@sailshq/lodash');
 
     // Import `machinepack-urls`.
     var Urls = require('machinepack-urls');
