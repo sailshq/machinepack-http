@@ -34,6 +34,7 @@
       "send-http-request",
       "fetch-webpage-html",
       "get",
+      "get-stream",
       "post",
       "put",
       "del",
