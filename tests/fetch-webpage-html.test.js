@@ -128,8 +128,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
   it('should trigger `requestFailed` when attempting to reach a server that doesn\'t exist', function(done) {
 
     Http.fetchWebpageHtml({
-      url: 'error',
-      baseUrl: 'http://localhosty.cakes:9999'
+      url: 'http://localhosty.cakes:9999/error',
     }).exec({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
