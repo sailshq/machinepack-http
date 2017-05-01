@@ -7,6 +7,17 @@ module.exports = {
   description: 'Send a GET request and immediately return the stream, which can be pumped to obtain the bytes of the response.',
 
 
+  extendedDescription:
+  'This machine determines whether a URL can be reached via a GET request and whether it responds with a 2xx status code.  '+
+  'If so, it waits until it\'s able to parse out response headers, then returns a Readable stream representing the response '+
+  'body.  The responsibility for any other validations/error handling falls on the consumer of the stream. However, this machine '+
+  '_DOES_ bind an `error` event handler on the stream to prevent emitted error events from crashing the process; ensuring that this '+
+  'machine is agnostic of its userland environment. If you plan to write code which uses the readable stream returned by this machine '+
+  'but you have never worked with Readable streams in Node.js, [check this out](https://docs.nodejitsu.com/articles/advanced/streams/how-to-use-fs-create-read-stream) '+
+  'for tips. For more conceptual information about readable streams in Node.js in general, check out the section on '+
+  '[`stream.Readable`](https://nodejs.org/api/stream.html#stream_class_stream_readable) in the Node.js docs.',
+
+
   sideEffects: 'cacheable',
 
 
@@ -42,11 +53,20 @@ module.exports = {
     success: {
       description: 'The server responded with a 2xx status code.',
       outputFriendlyName: 'Stream',
-      outputDescription: 'The response stream (WITHOUT any error handlers bound to it!  That\'s up to you!)',
+      outputDescription: 'The response stream',
       outputExample: '==='
     },
 
-    non200Response: require('../constants/non-200-response.exit'),
+    non200Response: {
+      description: 'A non-2xx status code was returned from the server.',
+      outputFriendlyName: 'Partial server response',
+      outputDescription: 'A dictionary representing part of the response from the server, including the status code and response headers.',
+      outputExample: {
+        statusCode: 404,
+        headers: {},
+      },
+      extendedDescription: 'This server response DOES NOT CONTAIN a response body.'
+    },
 
     requestFailed: require('../constants/request-failed.exit')
 
@@ -105,27 +125,58 @@ module.exports = {
     // And send the request using the options dictionary constructed above.
     var alreadyExited;
     var stream = request(requestOpts);
+
+
+    // Bind a no-op handler for the `error` event to prevent it from crashing the process if it fires.
+    // (userland code can still bind and use its own error events).
+    stream.on('error', function noop (err) { });
+    // ^ Since event handlers are garbage collected when the event emitter is itself gc()'d, it is safe
+    // for us to bind this event handler here.
+
+
+    // Also bind a one-time error handler specifically to catch a few specific errors that can
+    // occur up-front.
+    stream.once('error', function (err) {
+      // When receiving subsequent read errors on this Readable stream after
+      // the first (or after we've exited successfully), the best we can do
+      // is remain silent.
+      if (alreadyExited) {
+        // Note that in the future, we could expose an optional input
+        // (e.g. `onUnexpectedError`) which accepts a notifier function that
+        // could be called in this scenario.
+        return;
+      }
+
+      // If we get an ENOTFOUND error, set the spinlock and return through the `requestFailed` exit.
+      // (This means the request failed -- i.e. disconnected from internet?  server down?)
+      if (err.code === 'ENOTFOUND') {
+        alreadyExited = 'requestFailed';
+        return exits.requestFailed(err);
+      }
+
+      // If any other sort of miscellaneous error occurs, set the spinlock and forward it through
+      // the `error` exit.
+      alreadyExited = 'error';
+      return exits.error(err);
+    });
+
+
     stream.on('response', function(httpResponse){
+
       // If the status code of the response is not in the 2xx range, then
       // return the server response dictionary through the `non2xxResponse` exit.
       if (httpResponse.statusCode >= 300 || httpResponse.statusCode <= 199) {
         alreadyExited = 'non200Response';
-        return exits.non200Response(httpResponse);
+        return exits.non200Response({
+          statusCode: httpResponse.statusCode,
+          headers: httpResponse.headers,
+        });
       }
 
+      // Otherwise, send through the raw stream.
       alreadyExited = 'success';
       return exits.success(stream);
 
-    });
-    stream.on('error', function (err){
-      if (alreadyExited) {
-        console.warn('Unexpected error handler triggered on HTTP request stream -- but AFTER the `get-stream` machine already called its `'+alreadyExited+'` exit!');
-        return;
-      }
-      // The request failed (disconnected from internet?  server down?)
-      // Return the unknown error through the `requestFailed` exit.
-      alreadyExited = 'requestFailed';
-      return exits.requestFailed(err);
     });
 
   }
