@@ -129,10 +129,11 @@ module.exports = {
 
     // Bind a no-op handler for the `error` event to prevent it from crashing the process if it fires.
     // (userland code can still bind and use its own error events).
+    /* eslint-disable handle-callback-err, no-unused-vars */
     stream.on('error', function noop (err) { });
     // ^ Since event handlers are garbage collected when the event emitter is itself gc()'d, it is safe
     // for us to bind this event handler here.
-
+    /* eslint-enable */
 
     // Also bind a one-time error handler specifically to catch a few specific errors that can
     // occur up-front.
