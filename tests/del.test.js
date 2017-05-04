@@ -134,7 +134,7 @@ describe('machinepack-http: delete', function() {
 
     Http.del({
       url: 'error',
-      baseUrl: 'http://localhosty.cakes:9999'
+      baseUrl: 'http://localhosty.cakes.sailsjs.com:9999'
     }).exec({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
