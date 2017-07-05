@@ -32,7 +32,7 @@ describe('machinepack-http: get', function() {
     Http.get({
       url: 'http://localhost:1492/ok?owl=hoot',
       data: {age: 99},
-    }).exec({
+    }).switch({
       success: function(data) {
         assert.equal(data.method, 'GET');
         assert.equal(data.params.owl, 'hoot');
@@ -48,7 +48,7 @@ describe('machinepack-http: get', function() {
 
     Http.get({
       url: 'http://localhost:1492/notFound',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -65,7 +65,7 @@ describe('machinepack-http: get', function() {
 
     Http.get({
       url: 'http://localhost:1492/badRequest',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -82,7 +82,7 @@ describe('machinepack-http: get', function() {
 
     Http.get({
       url: 'http://localhost:1492/forbidden',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -99,7 +99,7 @@ describe('machinepack-http: get', function() {
 
     Http.get({
       url: 'http://localhost:1492/unauthorized',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -116,7 +116,7 @@ describe('machinepack-http: get', function() {
 
     Http.get({
       url: 'http://localhost:1492/error',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -134,7 +134,7 @@ describe('machinepack-http: get', function() {
     Http.get({
       url: 'error',
       baseUrl: 'http://localhosty.cakes.sailsjs.com:9999'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },

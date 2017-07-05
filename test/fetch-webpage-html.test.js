@@ -30,7 +30,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/html',
-    }).exec({
+    }).switch({
       success: function(html) {
         assert.equal(html, '<html><body>hi!</body></html>');
         return done();
@@ -44,7 +44,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/notFound',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -61,7 +61,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/badRequest',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -78,7 +78,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/forbidden',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -95,7 +95,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/unauthorized',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -112,7 +112,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhost:1492/error',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -129,7 +129,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
     Http.fetchWebpageHtml({
       url: 'http://localhosty.cakes.sailsjs.com:9999/error'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },

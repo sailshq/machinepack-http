@@ -34,7 +34,7 @@ describe('machinepack-http: patch', function() {
       data: {
         age: 99
       }
-    }).exec({
+    }).switch({
       success: function(data) {
         assert.equal(data.method, 'PATCH');
         assert.equal(data.params.owl, 'hoot');
@@ -50,7 +50,7 @@ describe('machinepack-http: patch', function() {
 
     Http.patch({
       url: 'http://localhost:1492/notFound',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -67,7 +67,7 @@ describe('machinepack-http: patch', function() {
 
     Http.patch({
       url: 'http://localhost:1492/badRequest',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -84,7 +84,7 @@ describe('machinepack-http: patch', function() {
 
     Http.patch({
       url: 'http://localhost:1492/forbidden',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -101,7 +101,7 @@ describe('machinepack-http: patch', function() {
 
     Http.patch({
       url: 'http://localhost:1492/unauthorized',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -118,7 +118,7 @@ describe('machinepack-http: patch', function() {
 
     Http.patch({
       url: 'http://localhost:1492/error',
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `non200Response` exit to be triggered, not `success`!');
       },
@@ -136,7 +136,7 @@ describe('machinepack-http: patch', function() {
     Http.patch({
       url: 'error',
       baseUrl: 'http://localhosty.cakes.sailsjs.com:9999'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },

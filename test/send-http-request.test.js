@@ -42,7 +42,7 @@ describe('machinepack-http: send-http-request', function() {
       headers: {
         'x-beans-beans': 'the musical fruit'
       }
-    }).exec({
+    }).switch({
       error: function (err) {
         return done(err);
       },
@@ -86,7 +86,7 @@ describe('machinepack-http: send-http-request', function() {
       headers: {
         'x-beans-beans': 'the musical fruit'
       }
-    }).exec({
+    }).switch({
       error: function (err) {
         return done(err);
       },
@@ -132,7 +132,7 @@ describe('machinepack-http: send-http-request', function() {
       headers: {
         'x-beans-beans': 'the musical fruit'
       }
-    }).exec({
+    }).switch({
       error: function (err) {
         return done(err);
       },
@@ -179,7 +179,7 @@ describe('machinepack-http: send-http-request', function() {
       headers: {
         'x-beans-beans': 'the musical fruit'
       }
-    }).exec({
+    }).switch({
       error: function (err) {
         return done(err);
       },
@@ -227,7 +227,7 @@ describe('machinepack-http: send-http-request', function() {
       headers: {
         'x-beans-beans': 'the musical fruit'
       }
-    }).exec({
+    }).switch({
       error: function (err) {
         return done(err);
       },
@@ -262,7 +262,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'notFound',
       baseUrl: 'http://localhost:1492'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `notFound` exit to be triggered, not `success`!');
       },
@@ -281,7 +281,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'badRequest',
       baseUrl: 'http://localhost:1492'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `badRequest` exit to be triggered, not `success`!');
       },
@@ -300,7 +300,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'forbidden',
       baseUrl: 'http://localhost:1492'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `forbidden` exit to be triggered, not `success`!');
       },
@@ -319,7 +319,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'unauthorized',
       baseUrl: 'http://localhost:1492'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `unauthorized` exit to be triggered, not `success`!');
       },
@@ -338,7 +338,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'error',
       baseUrl: 'http://localhost:1492'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `serverError` exit to be triggered, not `success`!');
       },
@@ -357,7 +357,7 @@ describe('machinepack-http: send-http-request', function() {
       method: 'GET',
       url: 'error',
       baseUrl: 'http://localhosty.cakes.sailsjs.com:9999'
-    }).exec({
+    }).switch({
       success: function() {
         return done('Expected the `requestFailed` exit to be triggered, not `success`!');
       },

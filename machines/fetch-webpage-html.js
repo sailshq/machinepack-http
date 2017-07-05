@@ -47,7 +47,7 @@ module.exports = {
     Http.sendHttpRequest({
       method: 'GET',
       url: inputs.url
-    }).exec({
+    }).switch({
       error: function (err) { return exits.error(err); },
       requestFailed: function (err) { return exits.requestFailed(err); },
       non200Response: function (serverRes) { return exits.non200Response(serverRes); },
