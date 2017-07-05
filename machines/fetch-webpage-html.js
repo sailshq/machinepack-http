@@ -1,7 +1,7 @@
 module.exports = {
 
 
-  friendlyName: 'Fetch webpage HTML',
+  friendlyName: 'Fetch webpage HTML',// TODO: revisit this-- nowadays it probably makes sense to rename this to "Get webpage HTML" for consistency with "GET" and "Get stream"
 
 
   description: 'Fetch the HTML from a web page.',
