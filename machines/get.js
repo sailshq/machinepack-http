@@ -53,7 +53,7 @@ module.exports = {
       url: inputs.url,
       baseUrl: inputs.baseUrl,
       qs: inputs.data
-    }).exec({
+    }).switch({
       error: function (err) { return exits.error(err); },
       requestFailed: function (err) { return exits.requestFailed(err); },
       non200Response: function (serverRes) { return exits.non200Response(serverRes); },

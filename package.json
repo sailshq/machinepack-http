@@ -4,7 +4,7 @@
   "description": "Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.",
   "scripts": {
     "test": "npm run lint && npm run custom-tests",
-    "custom-tests": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && node ./node_modules/mocha/bin/mocha tests/*.js -R spec",
+    "custom-tests": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && node ./node_modules/mocha/bin/mocha test/*.js -R spec",
     "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'"
   },
   "keywords": [
@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@sailshq/lodash": "^3.10.2",
-    "machine": "^13.0.0-10",
+    "machine": "^15.0.0-0",
     "machinepack-urls": "^6.0.0-2",
     "request": "2.81.0"
   },
