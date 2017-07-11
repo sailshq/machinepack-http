@@ -40,7 +40,7 @@
   },
   "machinepack": {
     "friendlyName": "HTTP",
-    "machineDir": "machines/",
+    "machineDir": "lib/",
     "machines": [
       "send-http-request",
       "fetch-webpage-html",
