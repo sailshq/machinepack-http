@@ -3,7 +3,7 @@ var path = require('path');
 var SailsApp = require('sails').Sails;
 var Http = require('../');
 
-describe('machinepack-http: fetch-webpage-html', function() {
+describe('machinepack-http: get-webpage-html', function() {
 
   var Sails = new SailsApp();
   var app;
@@ -28,7 +28,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `success` and get the correct HTML when requesting a valid path', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/html',
     }).switch({
       success: function(html) {
@@ -42,7 +42,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `non200Response` when a 404 status code is received', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/notFound',
     }).switch({
       success: function() {
@@ -59,7 +59,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `non200Response` when a 400 status code is received', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/badRequest',
     }).switch({
       success: function() {
@@ -76,7 +76,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `non200Response` when a 403 status code is received', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/forbidden',
     }).switch({
       success: function() {
@@ -93,7 +93,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `non200Response` when a 401 status code is received', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/unauthorized',
     }).switch({
       success: function() {
@@ -110,7 +110,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `non200Response` when a 5xx status code is received', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhost:1492/error',
     }).switch({
       success: function() {
@@ -127,7 +127,7 @@ describe('machinepack-http: fetch-webpage-html', function() {
 
   it('should trigger `requestFailed` when attempting to reach a server that doesn\'t exist', function(done) {
 
-    Http.fetchWebpageHtml({
+    Http.getWebpageHtml({
       url: 'http://localhosty.cakes.sailsjs.com:9999/error'
     }).switch({
       success: function() {
