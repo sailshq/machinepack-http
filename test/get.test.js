@@ -44,6 +44,24 @@ describe('machinepack-http: get', function() {
 
   });
 
+  it('should properly encode and transmit request headers', function(done) {
+
+    Http.get({
+      baseUrl: 'http://localhost:1492',
+      url: 'ok?owl=hoot',
+      headers: {
+        'x-beans-beans': 'the musical fruit'
+      }
+    }).switch({
+      success: function(data) {
+        assert.equal(data.headers['x-beans-beans'], 'the musical fruit');
+        return done();
+      },
+      error: done
+    });
+
+  });
+
   it('should trigger `non200Response` when a 404 status code is received', function(done) {
 
     Http.get({
