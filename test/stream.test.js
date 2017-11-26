@@ -41,12 +41,12 @@ describe('machinepack-http: get', function() {
           var data;
           try {
             data = JSON.parse(response);
-          } catch (e) {
-            return done(e);
-          }
-          assert.equal(data.method, 'GET');
-          assert.equal(data.params.owl, 'hoot');
-          assert.equal(data.params.age, 99);
+
+            assert.equal(data.method, 'GET');
+            assert.equal(data.params.owl, 'hoot');
+            assert.equal(data.params.age, 99);
+          } catch (err) { return done(err); }
+
           return done();
         });
       },
