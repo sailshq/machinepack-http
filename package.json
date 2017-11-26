@@ -4,7 +4,7 @@
   "description": "Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.",
   "scripts": {
     "test": "npm run lint && npm run custom-tests",
-    "custom-tests": "node ./node_modules/test-machinepack-mocha/bin/testmachinepack-mocha.js && node ./node_modules/mocha/bin/mocha test/*.js -R spec",
+    "custom-tests": "&& node ./node_modules/mocha/bin/mocha test/*.js -R spec",
     "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'"
   },
   "keywords": [
@@ -33,10 +33,9 @@
     "url": "git@github.com:mikermcneil/machinepack-http.git"
   },
   "devDependencies": {
-    "eslint": "3.5.0",
+    "eslint": "4.11.0",
     "mocha": "3.0.2",
-    "sails": "^0.12.4",
-    "test-machinepack-mocha": "^2.1.1"
+    "sails": "0.12.13"
   },
   "machinepack": {
     "friendlyName": "HTTP",

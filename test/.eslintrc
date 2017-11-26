@@ -17,14 +17,10 @@
     "mocha": true
   },
 
-  "rules": false
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // ^^^
-  // FUTURE: When time allows, update this package's older tests
-  // so that they match today's coding conventions + .eslintrc
-  // (thus allowing us to run the linter on the tests as intended)
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
+  "globals": {
+    // "assert": true,
+    // "util": true
+    // …plus any other convenience globals exposed in test suites
+  }
 
 }
