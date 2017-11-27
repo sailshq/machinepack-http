@@ -1,6 +1,6 @@
 {
   "name": "machinepack-http",
-  "version": "4.0.0",
+  "version": "4.0.0-2",
   "description": "Send HTTP requests, scrape webpages, and stream data in your JavaScript/Node.js/Sails.js app with a simple, `jQuery.get()`-like interface for sending HTTP requests and processing server responses.",
   "scripts": {
     "test": "npm run lint && npm run custom-tests",
