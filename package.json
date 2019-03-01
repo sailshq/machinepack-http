@@ -42,7 +42,6 @@
     "machineDir": "lib/",
     "machines": [
       "send-http-request",
-      "get-webpage-html",
       "get",
       "get-stream",
       "post",
