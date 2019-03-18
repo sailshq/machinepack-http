@@ -23,7 +23,7 @@
   "author": "The Sails Company",
   "license": "MIT",
   "engines": {
-    "node": "^6||^8||^10"
+    "node": ">=6"
   },
   "dependencies": {
     "@sailshq/lodash": "^3.10.2",
