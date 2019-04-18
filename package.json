@@ -28,7 +28,7 @@
   "dependencies": {
     "@sailshq/lodash": "^3.10.2",
     "machine": "^15.0.0-0",
-    "machinepack-urls": "^6.0.0-2",
+    "machinepack-urls": "^6.0.2-0",
     "request": "2.85.0"
   },
   "devDependencies": {
