@@ -29,7 +29,8 @@
     "@sailshq/lodash": "^3.10.2",
     "machine": "^15.0.0-0",
     "machinepack-urls": "^6.0.2-0",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "rttc": "^10.0.1"
   },
   "devDependencies": {
     "eslint": "4.11.0",
